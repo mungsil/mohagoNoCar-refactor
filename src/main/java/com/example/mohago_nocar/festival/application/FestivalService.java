@@ -42,7 +42,7 @@ public class FestivalService implements FestivalUseCase {
     public FestivalLocationResponseDto getFestivalLocation(Long festivalId) {
         Festival festival = festivalRepository.getFestivalById(festivalId);
 
-        return FestivalLocationResponseDto.of(festival.getLocation());
+        return FestivalLocationResponseDto.of(festival.getCoordinate());
     }
 
     @Override

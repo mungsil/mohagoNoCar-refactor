@@ -10,20 +10,20 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(of = {"longitude", "latitude"})
 @ToString
-public class Location {
+public class Coordinate {
 
     private Double longitude; // x
     private Double latitude; // y
 
-    public static Location from(Double longitude, Double latitude) {
-        return Location.builder()
+    public static Coordinate from(Double longitude, Double latitude) {
+        return com.example.mohago_nocar.global.common.domain.vo.Coordinate.builder()
                 .longitude(longitude)
                 .latitude(latitude)
                 .build();
     }
 
-    public static Location from(String longitude, String latitude) {
-        return Location.from(Double.valueOf(longitude), Double.valueOf(latitude));
+    public static Coordinate from(String longitude, String latitude) {
+        return com.example.mohago_nocar.global.common.domain.vo.Coordinate.from(Double.valueOf(longitude), Double.valueOf(latitude));
     }
 
 }
