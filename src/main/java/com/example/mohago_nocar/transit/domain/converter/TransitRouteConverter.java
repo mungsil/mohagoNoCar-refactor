@@ -1,6 +1,7 @@
 package com.example.mohago_nocar.transit.domain.converter;
 
 import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.transit.domain.model.*;
 import com.example.mohago_nocar.transit.infrastructure.externalApi.odsay.dto.response.OdsayRouteResponse;
 import com.fasterxml.jackson.databind.JsonNode;

@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.place.domain.model;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.EnumType.STRING;
-import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor
@@ -21,7 +20,7 @@ public class Place {
     private String name;
 
     @NotNull
-    private Location location;
+    private Coordinate coordinate;
 
     @NotNull
     private String address;
@@ -36,7 +35,7 @@ public class Place {
     public static Place from(
             String id,
             String name,
-            Location location,
+            Coordinate coordinate,
             String address,
             String placeUrl,
             PlaceCategory category
@@ -44,7 +43,7 @@ public class Place {
         return Place.builder()
                 .id(id)
                 .name(name)
-                .location(location)
+                .coordinate(coordinate)
                 .address(address)
                 .placeUrl(placeUrl)
                 .category(category)
@@ -55,14 +54,14 @@ public class Place {
     private Place(
             String id,
             String name,
-            Location location,
+            Coordinate coordinate,
             String address,
             String placeUrl,
             PlaceCategory category
     ) {
         this.id = id;
         this.name = name;
-        this.location = location;
+        this.coordinate = coordinate;
         this.address = address;
         this.placeUrl = placeUrl;
         this.category = category;

@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.place.presentation;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.place.domain.model.Place;
 
 import lombok.Builder;
@@ -10,7 +10,7 @@ public record NearPlaceResponseDto(
         String id,
         String name,
         Long festivalId,
-        Location location,
+        Coordinate coordinate,
         String address,
         String placeUrl,
         String category
@@ -20,7 +20,7 @@ public record NearPlaceResponseDto(
                 .id(place.getId())
                 .name(place.getName())
                 .festivalId(festivalId)
-                .location(place.getLocation())
+                .coordinate(place.getCoordinate())
                 .address(place.getAddress())
                 .placeUrl(place.getPlaceUrl())
                 .category(place.getCategory().name())

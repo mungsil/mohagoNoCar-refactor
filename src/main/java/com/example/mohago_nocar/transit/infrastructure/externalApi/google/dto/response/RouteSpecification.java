@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.transit.infrastructure.externalApi.google.dto.response;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import lombok.Builder;
 
 /**
@@ -14,14 +14,14 @@ import lombok.Builder;
 public record RouteSpecification(
         Double distanceInKm,
         Long durationInMinutes,
-        Location origin,
-        Location destination
+        Coordinate origin,
+        Coordinate destination
 ) {
 
     public static RouteSpecification from(
             GoogleDistanceMatrixResponse.Element element,
-            Location origin,
-            Location destination
+            Coordinate origin,
+            Coordinate destination
     ) {
         return RouteSpecification.builder()
                 .distanceInKm(element.distance().value() / 1000.0)
@@ -31,7 +31,7 @@ public record RouteSpecification(
                 .build();
     }
 
-    public boolean isEqualLocation(Location origin, Location destination) {
+    public boolean isEqualLocation(Coordinate origin, Coordinate destination) {
         return this.origin.equals(origin) && this.destination.equals(destination);
     }
 

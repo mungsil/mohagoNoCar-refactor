@@ -2,7 +2,7 @@ package com.example.mohago_nocar.festival.domain.model;
 
 import com.example.mohago_nocar.festival.domain.model.vo.ActivePeriod;
 import com.example.mohago_nocar.global.common.domain.BaseEntity;
-import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -37,25 +37,25 @@ public class Festival extends BaseEntity {
 
     @NotNull
     @Embedded
-    private Location location;
+    private Coordinate coordinate;
 
-    public static Festival from(String name, ActivePeriod activePeriod, String description, String address, Location location) {
+    public static Festival from(String name, ActivePeriod activePeriod, String description, String address, Coordinate coordinate) {
         return Festival.builder()
                 .name(name)
                 .activePeriod(activePeriod)
                 .description(description)
                 .address(address)
-                .location(location)
+                .coordinate(coordinate)
                 .build();
     }
 
     @Builder
-    private Festival(String name, ActivePeriod activePeriod, String description, String address, Location location) {
+    private Festival(String name, ActivePeriod activePeriod, String description, String address, Coordinate coordinate) {
         this.name = name;
         this.activePeriod = activePeriod;
         this.description = description;
         this.address = address;
-        this.location = location;
+        this.coordinate = coordinate;
     }
 
 
