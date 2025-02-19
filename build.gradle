@@ -31,11 +31,16 @@ dependencies {
 	// Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// HTTP Client
 	implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.3.1'
+
+	// rate limit
+	implementation "io.github.resilience4j:resilience4j-ratelimiter:2.2.0"
+	implementation "io.github.resilience4j:resilience4j-reactor:2.2.0"
 
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
@@ -61,6 +66,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'it.ozimov:embedded-redis:0.7.3'
+	testImplementation 'io.projectreactor:reactor-test'
 	runtimeOnly 'com.h2database:h2'
 }
 
