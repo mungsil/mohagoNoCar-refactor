@@ -28,11 +28,11 @@ public class SubwayPathResponseDto extends SubPathResponseDto{
                 .sectionTime(subwayPath.getSectionTime())
                 .subwayLineName(subwayPath.getSubwayLineName())
                 .startPlaceName(subwayPath.getStartName())
-                .startLongitude(subwayPath.getStartX())
-                .startLatitude(subwayPath.getStartY())
+                .startLongitude(subwayPath.getStartCoordinate().getLongitude())
+                .startLatitude(subwayPath.getStartCoordinate().getLatitude())
                 .endPlaceName(subwayPath.getEndName())
-                .endLongitude(subwayPath.getEndX())
-                .endLatitude(subwayPath.getEndY())
+                .endLongitude(subwayPath.getEndCoordinate().getLongitude())
+                .endLatitude(subwayPath.getEndCoordinate().getLatitude())
                 .build();
     }
 

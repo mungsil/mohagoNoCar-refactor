@@ -2,7 +2,7 @@ package com.example.mohago_nocar.place.application;
 
 import com.example.mohago_nocar.festival.domain.model.Festival;
 import com.example.mohago_nocar.festival.domain.service.FestivalUseCase;
-import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.place.domain.converter.PlaceConverter;
 import com.example.mohago_nocar.place.domain.model.Place;
 import com.example.mohago_nocar.place.domain.repository.PlaceRepository;
@@ -32,21 +32,21 @@ public class PlaceService implements PlaceUseCase {
         Festival festival = festivalUseCase.getFestival(festivalId);
         List<Place> places = placeRepository.getFestivalAroundPlaces(festivalId);
         if (places.isEmpty()) {
-            places = cachePlaces(festivalId, festival.getLocation());
+            places = cachePlaces(festivalId, festival.getCoordinate());
         }
 
         return PlaceConverter.convertToNearPlaceResponseDtos(festivalId, places);
     }
 
-    public List<Place> cachePlaces(Long festivalId, Location centerLocation) {
-        KakaoPlacesResponse placesFromExternalApi = searchPlacesAround(centerLocation);
+    public List<Place> cachePlaces(Long festivalId, Coordinate centerCoordinate) {
+        KakaoPlacesResponse placesFromExternalApi = searchPlacesAround(centerCoordinate);
         List<Place> places = PlaceConverter.convertToPlaces(placesFromExternalApi);
         return placeRepository.saveAllToCache(festivalId, places);
     }
 
-    private KakaoPlacesResponse searchPlacesAround(Location centerLocation) {
+    private KakaoPlacesResponse searchPlacesAround(Coordinate centerCoordinate) {
         return kakaoApiClient.searchAttractionPlaces(
-                centerLocation,
+                centerCoordinate,
                 RADIUS,
                 PAGE_SIZE
         );

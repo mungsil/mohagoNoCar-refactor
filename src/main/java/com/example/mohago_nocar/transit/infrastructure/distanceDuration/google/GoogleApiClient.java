@@ -1,7 +1,7 @@
 package com.example.mohago_nocar.transit.infrastructure.externalApi.google;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
-import com.example.mohago_nocar.transit.infrastructure.externalApi.google.dto.response.GoogleDistanceMatrixResponse;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
+import com.example.mohago_nocar.transit.infrastructure.distanceDuration.google.dto.response.GoogleDistanceMatrixResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -60,13 +60,13 @@ public class GoogleApiClient {
                 .body(GoogleDistanceMatrixResponse.class);
     }
 
-    private String formatOriginCoordinates(Location origin) {
+    private String formatCoordinates(Coordinate origin) {
         return origin.getLatitude() + "," + origin.getLongitude();
     }
 
-    private String formatLocations(List<Location> locations) {
+    private String formatCoordinates(List<Coordinate> coordinates) {
         return URLEncoder.encode(
-                locations.stream()
+                coordinates.stream()
                         .map(location -> location.getLatitude() + "," + location.getLongitude())
                         .collect(Collectors.joining("|"))
                 ,StandardCharsets.UTF_8
