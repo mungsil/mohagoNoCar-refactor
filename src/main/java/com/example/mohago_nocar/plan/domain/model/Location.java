@@ -6,6 +6,9 @@ import com.example.mohago_nocar.place.domain.model.Place;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * 장소의 이름과 경위도
+ */
 @Getter
 public class Location {
 
