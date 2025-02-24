@@ -1,8 +1,8 @@
-package com.example.mohago_nocar.plan.application;
+package com.example.mohago_nocar.plan.application.strategy;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.global.common.exception.InternalServerException;
-import com.example.mohago_nocar.transit.infrastructure.externalApi.google.dto.response.RouteSpecification;
+import com.example.mohago_nocar.transit.domain.model.RouteMetrics;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -10,17 +10,17 @@ import java.util.*;
 
 @Component
 @Slf4j
-public class ShortestTimeRouteStrategy implements RouteOptimizationStrategy{
+public class ShortestTimeRouteStrategy implements RouteOptimizationStrategy {
 
     private static final int FIRST = 0;
 
     @Override
-    public List<Coordinate> calculateOptimalRoute(List<Coordinate> coordinates, List<RouteSpecification> routeSpecification) {
+    public List<Coordinate> calculateOptimalRoute(List<Coordinate> coordinates, List<RouteMetrics> routeMetrics) {
         int locationCount = coordinates.size();
-        Map<Coordinate, Map<Coordinate, RouteSpecification>> fromToTransitInfoMap = new HashMap<>();
+        Map<Coordinate, Map<Coordinate, RouteMetrics>> fromToTransitInfoMap = new HashMap<>();
 
         for (int originIndex = FIRST; originIndex < locationCount; originIndex++) {
-            Map<Coordinate, RouteSpecification> toLocationTransitInfoMap = new HashMap<>();
+            Map<Coordinate, RouteMetrics> toLocationTransitInfoMap = new HashMap<>();
 
             for (int destinationIndex = FIRST; destinationIndex < locationCount; destinationIndex++) {
 
@@ -31,7 +31,7 @@ public class ShortestTimeRouteStrategy implements RouteOptimizationStrategy{
                 Coordinate origin = coordinates.get(originIndex);
                 Coordinate destination = coordinates.get(destinationIndex);
 
-                RouteSpecification routeSpec = getMatchedRouteSpec(origin, destination, routeSpecification);
+                RouteMetrics routeSpec = getMatchedRouteSpec(origin, destination, routeMetrics);
                 toLocationTransitInfoMap.put(destination, routeSpec);
             }
 
@@ -50,12 +50,12 @@ public class ShortestTimeRouteStrategy implements RouteOptimizationStrategy{
         return optimalRoute;
     }
 
-    private RouteSpecification getMatchedRouteSpec(
+    private RouteMetrics getMatchedRouteSpec(
             Coordinate origin,
             Coordinate destination,
-            List<RouteSpecification> routeSpecificationBetweenLocations
+            List<RouteMetrics> routeMetricsBetweenLocations
     ) {
-        Optional<RouteSpecification> routeSpecification = routeSpecificationBetweenLocations.stream()
+        Optional<RouteMetrics> routeSpecification = routeMetricsBetweenLocations.stream()
                 .filter(route -> route.isEqualLocation(origin, destination))
                 .findFirst();
 
@@ -70,7 +70,7 @@ public class ShortestTimeRouteStrategy implements RouteOptimizationStrategy{
     private void routeBacktracking(
             int k,
             List<Coordinate> coordinates,
-            Map<Coordinate, Map<Coordinate, RouteSpecification>> transitMaps,
+            Map<Coordinate, Map<Coordinate, RouteMetrics>> transitMaps,
             List<Coordinate> optimal,
             List<Coordinate> route,
             List<Boolean> isSelected
@@ -103,7 +103,7 @@ public class ShortestTimeRouteStrategy implements RouteOptimizationStrategy{
         }
     }
 
-    private int calcTravelTime(List<Coordinate> route,  Map<Coordinate, Map<Coordinate, RouteSpecification>> routeMaps) {
+    private int calcTravelTime(List<Coordinate> route,  Map<Coordinate, Map<Coordinate, RouteMetrics>> routeMaps) {
         int n = route.size();
 
         int travelTime = 0;

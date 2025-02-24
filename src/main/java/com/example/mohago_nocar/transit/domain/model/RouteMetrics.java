@@ -1,6 +1,7 @@
-package com.example.mohago_nocar.transit.infrastructure.externalApi.google.dto.response;
+package com.example.mohago_nocar.transit.domain.model;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
+import com.example.mohago_nocar.transit.infrastructure.distanceDuration.google.dto.response.GoogleDistanceMatrixResponse;
 import lombok.Builder;
 
 /**
@@ -11,19 +12,19 @@ import lombok.Builder;
  * @param destination
  */
 @Builder
-public record RouteSpecification(
+public record RouteMetrics(
         Double distanceInKm,
         Long durationInMinutes,
         Coordinate origin,
         Coordinate destination
 ) {
 
-    public static RouteSpecification from(
+    public static RouteMetrics of(
             GoogleDistanceMatrixResponse.Element element,
             Coordinate origin,
             Coordinate destination
     ) {
-        return RouteSpecification.builder()
+        return RouteMetrics.builder()
                 .distanceInKm(element.distance().value() / 1000.0)
                 .durationInMinutes(element.duration().value() / 60L)
                 .origin(origin)
