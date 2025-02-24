@@ -15,8 +15,8 @@ public class WalkPathResponseDto extends SubPathResponseDto{
         WalkPath walkPath = (WalkPath) subPath;
 
         return WalkPathResponseDto.builder()
-                .distance(walkPath.getDistance())
-                .sectionTime(walkPath.getSectionTime())
+                .distance(walkPath.getDistanceKm())
+                .sectionTime(walkPath.getSectionTimeMin())
                 .build();
     }
 

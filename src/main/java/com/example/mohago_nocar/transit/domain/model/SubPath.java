@@ -4,12 +4,12 @@ import lombok.Getter;
 
 @Getter
 public abstract class SubPath {
-    protected final double distance; // 구간 거리
-    protected final int sectionTime; // 구간 소요 시간
+    protected final double distanceKm; // 구간 거리
+    protected final int sectionTimeMin; // 구간 소요 시간
 
-    protected SubPath(double distance, int sectionTime) {
-        this.distance = distance;
-        this.sectionTime = sectionTime;
+    protected SubPath(double distanceKm, int sectionTimeMin) {
+        this.distanceKm = distanceKm;
+        this.sectionTimeMin = sectionTimeMin;
     }
 
     public abstract PathType getPathType();
