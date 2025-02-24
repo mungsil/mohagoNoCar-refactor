@@ -1,7 +1,7 @@
 package com.example.mohago_nocar.transit.infrastructure.error.code;
 
+import com.example.mohago_nocar.global.common.exception.InternalServerException;
 import com.example.mohago_nocar.global.common.exception.Status;
-import com.example.mohago_nocar.transit.infrastructure.error.exception.OdsayServerException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,7 @@ public enum OdsayErrorCode implements Status {
             case "-99" -> NO_SEARCH_RESULTS;
             case "-1" -> COMPONENT_ERROR;
             case "429" -> TOO_MANY_REQUESTS;
-            default -> throw new OdsayServerException("unknown Error Code 발생 : "+ code, ODSAY_SERVER_ERROR);
+            default -> throw new InternalServerException("unknown Error Code 발생 : "+ code);
         };
     }
 
