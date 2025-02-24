@@ -21,7 +21,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class OdsayTransitRouteApiAdapter implements TransitRouteApiAdapter {
+public class ODsayTransitRouteApiAdapter implements TransitRouteApiAdapter {
 
     private static final int EARTH_RADIUS = 6371;
 
