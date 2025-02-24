@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.transit.infrastructure.externalApi.google;
+package com.example.mohago_nocar.transit.infrastructure.distanceDuration.google;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.transit.infrastructure.distanceDuration.google.dto.response.GoogleDistanceMatrixResponse;
@@ -44,10 +44,10 @@ public class GoogleApiClient {
      * </table>
      * @return 행렬에 기반한 (출발지, 목적지)와 관련된 데이터를 반환합니다.
      */
-    public GoogleDistanceMatrixResponse getDistanceMatrix(Location origin, List<Location> destinations) {
+    public GoogleDistanceMatrixResponse getDistanceMatrix(Coordinate origin, List<Coordinate> destinations) {
         URI requestUri = UriComponentsBuilder.fromUriString(baseUrl)
-                .queryParam("origins", formatOriginCoordinates(origin))
-                .queryParam("destinations", formatLocations(destinations))
+                .queryParam("origins", formatCoordinates(origin))
+                .queryParam("destinations", formatCoordinates(destinations))
                 .queryParam("language", "ko")
                 .queryParam("mode", "transit")
                 .queryParam("key", apiKey)

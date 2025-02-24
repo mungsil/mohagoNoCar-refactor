@@ -1,11 +1,12 @@
-package com.example.mohago_nocar.transit.infrastructure.externalApi.google.dto.response;
+package com.example.mohago_nocar.transit.infrastructure.distanceDuration.google.dto.response;
 
 import java.util.List;
 
 public record GoogleDistanceMatrixResponse(
-        List<String> destinationAddresses,
-        List<String> originAddresses,
-        List<Row> rows
+        List<String> destination_addresses,
+        List<String> origin_addresses,
+        List<Row> rows,
+        GoogleDistanceMatrixStatus status
 ) {
 
     public record Row(
