@@ -21,8 +21,8 @@ import java.time.Duration;
 @Slf4j
 public class ODsayApiClient {
 
-    private static final int TIMEOUT_DURATION_SEC = 5;
-    private static final int INTERVAL_MS = 200;
+    private static final int TIMEOUT_DURATION_SEC = 30;
+    private static final int INTERVAL_MS = 210;
     private static final int PERMIT_THREAD_SIZE = 1;
     private static final String ODSAY_RATE_LIMITER = "odsay";
 
