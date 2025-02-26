@@ -55,16 +55,16 @@ public class ShortestTimeRouteStrategy implements RouteOptimizationStrategy {
             Coordinate destination,
             List<RouteMetrics> routeMetricsBetweenLocations
     ) {
-        Optional<RouteMetrics> routeSpecification = routeMetricsBetweenLocations.stream()
+        Optional<RouteMetrics> routeMetrics = routeMetricsBetweenLocations.stream()
                 .filter(route -> route.isEqualLocation(origin, destination))
                 .findFirst();
 
-        if (routeSpecification.isEmpty()) {
+        if (routeMetrics.isEmpty()) {
             log.error("origin-{}, destination-{}를 가지는 RouteSpec을 찾을 수 없습니다.", origin, destination);
             throw new InternalServerException();
         }
 
-        return routeSpecification.get();
+        return routeMetrics.get();
     }
 
     private void routeBacktracking(
