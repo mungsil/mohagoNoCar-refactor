@@ -17,10 +17,10 @@ public class ExecutorServiceConfig {
         return Executors.newVirtualThreadPerTaskExecutor();
     }
 
-    @Bean
+/*    @Bean
     @ConditionalOnThreading(Threading.PLATFORM)
-    public ExecutorService platformThreadExecutor(){
+    public ExecutorService cachedThreadExecutor(){
         return Executors.newCachedThreadPool();
-    }
+    }*/
 
 }
