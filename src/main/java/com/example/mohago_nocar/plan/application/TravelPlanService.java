@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -34,6 +33,8 @@ import static com.example.mohago_nocar.plan.presentation.exception.PlanErrorCode
 @RequiredArgsConstructor
 @Slf4j
 public class TravelPlanService implements TravelPlanUseCase {
+
+    private final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
 
     private final PlaceRepository placeRepository;
     private final FestivalRepository festivalRepository;
@@ -64,7 +65,10 @@ public class TravelPlanService implements TravelPlanUseCase {
         var coordinates = collectCoordinate(namesByCoordinate);
         var routeMetrics = fetchDistanceAndDurations(coordinates);
 
-        return routeOptimizationStrategy.calculateOptimalRoute(coordinates, routeMetrics);
+        var task = forkJoinPool.submit(() ->
+                routeOptimizationStrategy.calculateOptimalRoute(coordinates, routeMetrics));
+
+        return task.join();
     }
 
     private List<Coordinate> collectCoordinate(Map<Coordinate, List<String>> namesByCoordinate) {
