@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface PlaceRepository {
 
-    List<Place> findByIds(Long festivalId, List<String> placeIds);
+    List<Place> getChosenPlace(Long festivalId, List<String> placeIds);
 
     List<Place> getFestivalAroundPlaces(Long festivalId);
 
-    List<Place> saveAllToCache(Long festivalId, List<Place> nearPlaces);
+    List<Place> savePlaces(Long festivalId, List<Place> nearPlaces);
 }

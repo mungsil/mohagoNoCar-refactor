@@ -23,7 +23,7 @@ public class PlaceController {
     public ApiResponse<List<NearPlaceResponseDto>> getFestivalNearPlaces(
             @PathVariable(name = "festivalId") Long festivalId
     ) {
-        List<NearPlaceResponseDto> places = placeUseCase.getFestivalNearPlaces(festivalId);
+        List<NearPlaceResponseDto> places = placeUseCase.getPlacesAround(festivalId);
         return ApiResponse.ok(places);
     }
 
