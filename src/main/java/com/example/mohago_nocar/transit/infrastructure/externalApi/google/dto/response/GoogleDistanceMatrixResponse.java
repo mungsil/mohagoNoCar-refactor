@@ -3,8 +3,8 @@ package com.example.mohago_nocar.transit.infrastructure.externalApi.google.dto.r
 import java.util.List;
 
 public record GoogleDistanceMatrixResponse(
-        List<String> destinationAddresses,
-        List<String> originAddresses,
+        List<String> destination_addresses,
+        List<String> origin_addresses,
         List<Row> rows
 ) {
 

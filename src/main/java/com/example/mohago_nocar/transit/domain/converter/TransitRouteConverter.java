@@ -1,7 +1,7 @@
 package com.example.mohago_nocar.transit.domain.converter;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
+import com.example.mohago_nocar.plan.domain.model.Location;
 import com.example.mohago_nocar.transit.domain.model.*;
 import com.example.mohago_nocar.transit.infrastructure.externalApi.odsay.dto.response.OdsayRouteResponse;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,7 +21,8 @@ public class TransitRouteConverter {
     private static final double METER_TO_KILOMETER = 0.001;
 
     public static TransitRoute convertRouteResponseDtoToTransitRoute(
-            OdsayRouteResponse routeResponseDto, Location origin, Location destination) {
+            OdsayRouteResponse routeResponseDto, Location origin, Location destination
+    ) {
         if (routeResponseDto.isTooShortDistance()) {
             return createWalkingRoute(origin, destination);
         }
@@ -31,15 +32,15 @@ public class TransitRouteConverter {
         int totalTime = extractTotalTime(path);
         List<SubPath> subPaths = extractSubPaths(path);
 
-        return TransitRoute.from(totalTime, totalDistance, subPaths);
+        return TransitRoute.from(origin, destination, totalTime, totalDistance, subPaths);
     }
 
     private static TransitRoute createWalkingRoute(Location origin, Location destination) {
-        double walkingDistance = getKmDist(origin, destination);
+        double walkingDistance = getKmDist(origin.getCoordinate(), destination.getCoordinate());
         int walkingTime = (int) Math.round(walkingDistance * 15);
         WalkPath walkPath = new WalkPath(walkingDistance, walkingTime);
 
-        return TransitRoute.from(walkingTime, walkingDistance, List.of(walkPath));
+        return TransitRoute.from(origin, destination, walkingTime, walkingDistance, List.of(walkPath));
     }
 
 
@@ -49,7 +50,7 @@ public class TransitRouteConverter {
      * @param arrival
      * @return 두 위치(Location) 사이의 거리
      */
-    private static Double getKmDist(Location departure, Location arrival) {
+    private static Double getKmDist(Coordinate departure, Coordinate arrival) {
         Double dx = Math.abs(departure.getLongitude() - arrival.getLongitude());
         dx = Math.min(dx, 360 - dx);
 

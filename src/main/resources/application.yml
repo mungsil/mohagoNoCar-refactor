@@ -1,7 +1,11 @@
 server:
   port: ${SERVER_PORT:8080}
 
+
 spring:
+  mvc:
+    async:
+      request-timeout: 180000
   application:
     name: mohago-nocar
   profiles:

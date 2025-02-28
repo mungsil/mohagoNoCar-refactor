@@ -1,11 +1,15 @@
 package com.example.mohago_nocar.transit.infrastructure.externalApi.google;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.transit.infrastructure.externalApi.google.dto.response.GoogleDistanceMatrixResponse;
+import com.example.mohago_nocar.transit.infrastructure.externalApi.odsay.dto.response.OdsayRouteResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -16,18 +20,16 @@ import java.util.stream.Collectors;
 @Component
 public class GoogleApiClient {
 
-    private final RestClient restClient;
+    private final WebClient webClient;
     private final String apiKey;
-    private final String baseUrl;
 
     public GoogleApiClient(
-            RestClient restClient,
+            WebClient.Builder googleWebClient,
             @Value("${google.api-key}") String apiKey,
             @Value("${google.maps.distance}") String baseUrl
     ) {
-        this.restClient = restClient;
+        this.webClient = googleWebClient.baseUrl(baseUrl).build();
         this.apiKey = apiKey;
-        this.baseUrl = baseUrl;
     }
 
     /**
@@ -44,33 +46,31 @@ public class GoogleApiClient {
      * </table>
      * @return 행렬에 기반한 (출발지, 목적지)와 관련된 데이터를 반환합니다.
      */
-    public GoogleDistanceMatrixResponse getDistanceMatrix(Location origin, List<Location> destinations) {
-        URI requestUri = UriComponentsBuilder.fromUriString(baseUrl)
-                .queryParam("origins", formatOriginCoordinates(origin))
-                .queryParam("destinations", formatLocations(destinations))
-                .queryParam("language", "ko")
-                .queryParam("mode", "transit")
-                .queryParam("key", apiKey)
-                .build(true)
-                .toUri();
-
-        return restClient.get()
-                .uri(requestUri)
+    public Mono<GoogleDistanceMatrixResponse> getDistanceMatrix(Coordinate origin, List<Coordinate> destinations) {
+        return webClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .queryParam("origins", formatOriginCoordinates(origin))
+                                .queryParam("destinations", formatLocations(destinations))
+                                .queryParam("language", "ko")
+                                .queryParam("mode", "transit")
+                                .queryParam("key", apiKey)
+                                .build()
+                )
                 .retrieve()
-                .body(GoogleDistanceMatrixResponse.class);
+                .bodyToMono(GoogleDistanceMatrixResponse.class)
+                .doOnError(throwable -> System.out.println(throwable.getMessage()))
+                .onErrorResume(ex -> Mono.error(RuntimeException::new));
     }
 
-    private String formatOriginCoordinates(Location origin) {
+    private String formatOriginCoordinates(Coordinate origin) {
         return origin.getLatitude() + "," + origin.getLongitude();
     }
 
-    private String formatLocations(List<Location> locations) {
-        return URLEncoder.encode(
-                locations.stream()
-                        .map(location -> location.getLatitude() + "," + location.getLongitude())
-                        .collect(Collectors.joining("|"))
-                ,StandardCharsets.UTF_8
-        );
+    private String formatLocations(List<Coordinate> coordinates) {
+        return coordinates.stream()
+                .map(coordinate -> coordinate.getLatitude() + "," + coordinate.getLongitude())
+                .collect(Collectors.joining("|"));
     }
 
 }

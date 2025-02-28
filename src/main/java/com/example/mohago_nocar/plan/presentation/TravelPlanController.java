@@ -3,7 +3,6 @@ package com.example.mohago_nocar.plan.presentation;
 import com.example.mohago_nocar.global.common.response.ApiResponse;
 import com.example.mohago_nocar.plan.domain.service.TravelPlanUseCase;
 import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
-import com.example.mohago_nocar.plan.presentation.response.PlanTravelCourseResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,10 +21,11 @@ public class TravelPlanController {
     private final TravelPlanUseCase travelPlanUseCase;
 
     @PostMapping
-    public ApiResponse<?> planTravelCourse(
+    public Mono<ApiResponse<?>> planTravelCourse(
             @RequestBody @Valid PlanTravelCourseRequestDto requestDto
     ) {
-        List<PlanTravelCourseResponseDto> responseDto = travelPlanUseCase.planCourse(requestDto);
-        return ApiResponse.ok(responseDto);
+        return travelPlanUseCase.planCourse(requestDto)
+                .map(ApiResponse::ok);
     }
+
 }
