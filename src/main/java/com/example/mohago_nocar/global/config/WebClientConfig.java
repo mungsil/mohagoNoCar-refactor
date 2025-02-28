@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -14,10 +15,11 @@ import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
-import java.time.Duration;
-
 @Configuration
+@RequiredArgsConstructor
 public class WebClientConfig {
+
+    private final ObjectMapper objectMapper;
 
     @Bean
     public WebClient.Builder googleWebClient() {
@@ -29,27 +31,18 @@ public class WebClientConfig {
         return WebClient.builder()
                 .codecs(configurer -> configurer
                         .defaultCodecs()
-                        .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper())))
+                        .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper)))
                 .clientConnector(new ReactorClientHttpConnector(odsayHttpClient()));
     }
 
     @Bean
     public HttpClient googleHttpClient() {
-        return createHttpClient(5000, 10, 10);
+        return createHttpClient(10_000, 10, 10);
     }
 
     @Bean
     public HttpClient odsayHttpClient() {
-        return createHttpClient(5000, 10, 10);
-    }
-
-
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new SimpleModule()
-                .addDeserializer(OdsayRouteResponse.class, new ODsayApiResponseDeserializer()));
-        return objectMapper;
+        return createHttpClient(10_000, 10, 10);
     }
 
     private HttpClient createHttpClient(
