@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.place.infrastructure.externalApi.kakao;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.place.domain.model.PlaceCategory;
 import com.example.mohago_nocar.place.infrastructure.externalApi.kakao.dto.response.KakaoPlacesResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,10 +29,10 @@ public class KakaoApiClient {
         this.restClient = restClient;
     }
 
-    public KakaoPlacesResponse searchAttractionPlaces(Location centerLocation, int radius, int size) {
+    public KakaoPlacesResponse searchAttractionPlaces(Coordinate centerCoordinate, int radius, int size) {
         URI uri = UriComponentsBuilder.fromUriString(baseUrl)
-                .queryParam("x", centerLocation.getLongitude())
-                .queryParam("y", centerLocation.getLatitude())
+                .queryParam("x", centerCoordinate.getLongitude())
+                .queryParam("y", centerCoordinate.getLatitude())
                 .queryParam("radius", radius)
                 .queryParam("size", size)
                 .queryParam("category_group_code", PlaceCategory.ATTRACTION.getCode())
