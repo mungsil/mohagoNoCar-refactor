@@ -40,7 +40,7 @@ public class TravelPlanService implements TravelPlanUseCase {
     private final FestivalRepository festivalRepository;
     private final PlaceService placeService;
     private final RouteOptimizationStrategy routeOptimizationStrategy;
-    private final ExecutorService executor;
+    private final ExecutorService virtualThreadExecutor;
     private final TransitRouteApiAdapter transitRouteApiAdapter;
     private final DistanceDurationApiAdapter distanceDurationApiAdapter;
 
@@ -85,12 +85,21 @@ public class TravelPlanService implements TravelPlanUseCase {
                 .mapToObj(index -> asyncGetDistanceDuration(coordinates, index))
                 .toList();
 
-        CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
-
         return futures.stream()
-                .map(CompletableFuture::join)
+                .map(this::awaitFutureResult)
                 .flatMap(Collection::stream)
                 .toList();
+    }
+
+    private Future<List<RouteMetrics>> asyncGetDistanceDuration(List<Coordinate> coordinates, int index) {
+        return virtualThreadExecutor.submit(() -> distanceDurationApiCall(index, coordinates));
+    }
+
+    private List<RouteMetrics> distanceDurationApiCall(int index, List<Coordinate> coordinates) {
+        Coordinate origin = coordinates.get(index);
+        List<Coordinate> destinations = createDestination(coordinates, index);
+
+        return distanceDurationApiAdapter.getDistanceAndDuration(origin, destinations);
     }
 
     private List<TransitRoute> searchTransitRoutes(List<Location> optimalRouteLocations) {
@@ -114,17 +123,6 @@ public class TravelPlanService implements TravelPlanUseCase {
                     return names.stream()
                             .map(name -> Location.of(name, coordinate));
                 }).toList();
-    }
-
-    private CompletableFuture<List<RouteMetrics>> asyncGetDistanceDuration(List<Coordinate> coordinates, int index) {
-        return CompletableFuture.supplyAsync(() -> distanceDurationApiCall(index, coordinates), executor);
-    }
-
-    private List<RouteMetrics> distanceDurationApiCall(int index, List<Coordinate> coordinates) {
-        Coordinate origin = coordinates.get(index);
-        List<Coordinate> destinations = createDestination(coordinates, index);
-
-        return distanceDurationApiAdapter.getDistanceAndDuration(origin, destinations);
     }
 
     private List<Coordinate> createDestination(List<Coordinate> coordinates, int excludeIndex) {
@@ -186,6 +184,14 @@ public class TravelPlanService implements TravelPlanUseCase {
         });
 
         return placeNamesByCoordinate;
+    }
+
+    private List<RouteMetrics> awaitFutureResult(Future<List<RouteMetrics>> future) {
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
