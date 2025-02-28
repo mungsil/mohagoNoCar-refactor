@@ -4,7 +4,7 @@ import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.place.domain.model.*;
 import com.example.mohago_nocar.place.infrastructure.externalApi.kakao.dto.response.KakaoPlacesResponse;
 import com.example.mohago_nocar.place.infrastructure.externalApi.kakao.dto.response.KakaoPlacesResponse.KakaoPlaceResponse;
-import com.example.mohago_nocar.place.presentation.NearPlaceResponseDto;
+import com.example.mohago_nocar.place.presentation.response.NearPlaceResponseDto;
 
 import java.util.List;
 
