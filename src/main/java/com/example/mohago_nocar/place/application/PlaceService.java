@@ -44,9 +44,9 @@ public class PlaceService implements PlaceUseCase {
         return placeRepository.saveAllToCache(festivalId, places);
     }
 
-    private KakaoPlacesResponse searchPlacesAround(Location centerLocation) {
+    private KakaoPlacesResponse searchPlacesAround(Coordinate centerCoordinate) {
         return kakaoApiClient.searchAttractionPlaces(
-                centerLocation,
+                centerCoordinate,
                 RADIUS,
                 PAGE_SIZE
         );
