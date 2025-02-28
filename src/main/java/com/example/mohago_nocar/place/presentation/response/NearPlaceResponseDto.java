@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.place.presentation;
+package com.example.mohago_nocar.place.presentation.response;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.place.domain.model.Place;
