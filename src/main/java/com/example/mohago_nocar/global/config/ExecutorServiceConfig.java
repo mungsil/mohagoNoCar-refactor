@@ -12,15 +12,8 @@ import java.util.concurrent.Executors;
 public class ExecutorServiceConfig {
 
     @Bean
-    @ConditionalOnThreading(Threading.VIRTUAL)
     public ExecutorService virtualThreadExecutor(){
         return Executors.newVirtualThreadPerTaskExecutor();
     }
-
-/*    @Bean
-    @ConditionalOnThreading(Threading.PLATFORM)
-    public ExecutorService cachedThreadExecutor(){
-        return Executors.newCachedThreadPool();
-    }*/
 
 }

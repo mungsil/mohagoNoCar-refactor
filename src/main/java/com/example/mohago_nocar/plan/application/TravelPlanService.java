@@ -34,8 +34,6 @@ import static com.example.mohago_nocar.plan.presentation.exception.PlanErrorCode
 @Slf4j
 public class TravelPlanService implements TravelPlanUseCase {
 
-    private final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
-
     private final PlaceRepository placeRepository;
     private final FestivalRepository festivalRepository;
     private final PlaceService placeService;
@@ -65,10 +63,7 @@ public class TravelPlanService implements TravelPlanUseCase {
         var coordinates = collectCoordinate(namesByCoordinate);
         var routeMetrics = fetchDistanceAndDurations(coordinates);
 
-        var task = forkJoinPool.submit(() ->
-                routeOptimizationStrategy.calculateOptimalRoute(coordinates, routeMetrics));
-
-        return task.join();
+        return routeOptimizationStrategy.calculateOptimalRoute(coordinates, routeMetrics);
     }
 
     private List<Coordinate> collectCoordinate(Map<Coordinate, List<String>> namesByCoordinate) {
