@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.place.domain.converter;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.place.domain.model.*;
 import com.example.mohago_nocar.place.infrastructure.externalApi.kakao.dto.response.KakaoPlacesResponse;
 import com.example.mohago_nocar.place.infrastructure.externalApi.kakao.dto.response.KakaoPlacesResponse.KakaoPlaceResponse;
@@ -20,7 +20,7 @@ public class PlaceConverter {
         return Place.from(
                 dto.id(),
                 dto.place_name(),
-                Location.from(dto.x(), dto.y()),
+                Coordinate.from(dto.x(), dto.y()),
                 dto.address_name(),
                 dto.place_url(),
                 PlaceCategory.getCategoryByCode(dto.category_group_code())

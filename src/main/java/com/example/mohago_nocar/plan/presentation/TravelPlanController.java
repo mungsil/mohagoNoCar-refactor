@@ -26,7 +26,7 @@ public class TravelPlanController {
     public ApiResponse<?> planTravelCourse(
             @RequestBody @Valid PlanTravelCourseRequestDto requestDto
     ) {
-        List<PlanTravelCourseResponseDto> responseDto = travelPlanUseCase.planCourse(requestDto);
+        PlanTravelCourseResponseDto responseDto = travelPlanUseCase.planCourse(requestDto);
         return ApiResponse.ok(responseDto);
     }
 }

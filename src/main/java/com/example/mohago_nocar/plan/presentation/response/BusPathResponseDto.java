@@ -23,16 +23,16 @@ public class BusPathResponseDto extends SubPathResponseDto {
         BusPath busPath = (BusPath) subPath;
 
         return BusPathResponseDto.builder()
-                .distance(busPath.getDistance())
-                .sectionTime(busPath.getSectionTime())
+                .distance(busPath.getDistanceKm())
+                .sectionTime(busPath.getSectionTimeMin())
                 .busNo(busPath.getBusNo())
                 .busType(busPath.getBusType())
                 .startPlaceName(busPath.getStartName())
-                .startLongitude(busPath.getStartX())
-                .startLatitude(busPath.getStartY())
+                .startLongitude(busPath.getStartCoordinate().getLongitude())
+                .startLatitude(busPath.getStartCoordinate().getLatitude())
                 .endPlaceName(busPath.getEndName())
-                .endLongitude(busPath.getEndX())
-                .endLatitude(busPath.getEndY())
+                .endLongitude(busPath.getEndCoordinate().getLongitude())
+                .endLatitude(busPath.getEndCoordinate().getLatitude())
                 .build();
     }
 

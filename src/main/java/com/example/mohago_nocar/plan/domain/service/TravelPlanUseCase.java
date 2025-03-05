@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TravelPlanUseCase {
 
-    List<PlanTravelCourseResponseDto> planCourse(PlanTravelCourseRequestDto dto);
+    PlanTravelCourseResponseDto planCourse(PlanTravelCourseRequestDto dto);
 
 }

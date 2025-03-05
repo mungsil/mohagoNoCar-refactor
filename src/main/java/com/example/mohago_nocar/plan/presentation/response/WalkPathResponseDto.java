@@ -1,6 +1,5 @@
 package com.example.mohago_nocar.plan.presentation.response;
 
-import com.example.mohago_nocar.transit.domain.model.PathType;
 import com.example.mohago_nocar.transit.domain.model.SubPath;
 import com.example.mohago_nocar.transit.domain.model.WalkPath;
 import lombok.Builder;
@@ -15,8 +14,8 @@ public class WalkPathResponseDto extends SubPathResponseDto{
         WalkPath walkPath = (WalkPath) subPath;
 
         return WalkPathResponseDto.builder()
-                .distance(walkPath.getDistance())
-                .sectionTime(walkPath.getSectionTime())
+                .distance(walkPath.getDistanceKm())
+                .sectionTime(walkPath.getSectionTimeMin())
                 .build();
     }
 

@@ -1,7 +1,7 @@
 package com.example.mohago_nocar.course.domain.model.routeStep;
 
-import com.example.mohago_nocar.global.common.domain.vo.Location;
 import com.example.mohago_nocar.global.common.domain.BaseEntity;
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.global.util.DurationToIntervalConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -38,7 +38,7 @@ public class RouteStep extends BaseEntity {
             @AttributeOverride(name = "longitude", column = @Column(name = "start_longitude")),
             @AttributeOverride(name = "latitude", column = @Column(name = "start_latitude"))
     })
-    private Location startLocation;
+    private Coordinate startCoordinate;
 
     @NotNull
     @Embedded
@@ -46,34 +46,34 @@ public class RouteStep extends BaseEntity {
             @AttributeOverride(name = "longitude", column = @Column(name = "end_longitude")),
             @AttributeOverride(name = "latitude", column = @Column(name = "end_latitude"))
     })
-    private Location endLocation;
+    private Coordinate endCoordinate;
 
     @NotNull
     @Convert(converter = DurationToIntervalConverter.class)
     private Duration timeTaken;
 
     public static RouteStep from(Long courseId, Integer distance, Integer stepOrder,
-                                 Location startLocation, Location endLocation, Duration timeTaken
+                                 Coordinate startCoordinate, Coordinate endCoordinate, Duration timeTaken
     ) {
         return RouteStep.builder()
                 .courseId(courseId)
                 .distance(distance)
                 .stepOrder(stepOrder)
-                .startLocation(startLocation)
-                .endLocation(endLocation)
+                .startCoordinate(startCoordinate)
+                .endCoordinate(endCoordinate)
                 .timeTaken(timeTaken)
                 .build();
     }
 
     @Builder
     private RouteStep(Long courseId, Integer distance, Integer stepOrder,
-                     Location startLocation, Location endLocation, Duration timeTaken
+                      Coordinate startCoordinate, Coordinate endCoordinate, Duration timeTaken
     ) {
         this.courseId = courseId;
         this.distance = distance;
         this.stepOrder = stepOrder;
-        this.startLocation = startLocation;
-        this.endLocation = endLocation;
+        this.startCoordinate = startCoordinate;
+        this.endCoordinate = endCoordinate;
         this.timeTaken = timeTaken;
     }
 }

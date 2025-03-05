@@ -2,6 +2,9 @@ server:
   port: ${SERVER_PORT:8080}
 
 spring:
+  threads:
+    virtual:
+      enabled: false
   application:
     name: mohago-nocar
   profiles:
@@ -46,6 +49,12 @@ kakao:
   local:
     category: https://dapi.kakao.com/v2/local/search/category
   api-key: ${KAKAO_API_KEY}
+
+#logging:
+#  level:
+#    root: debug
+#    jdk.virtualThread: debug
+
 ---
 spring:
   config:

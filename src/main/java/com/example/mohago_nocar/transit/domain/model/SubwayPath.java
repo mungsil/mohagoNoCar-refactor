@@ -1,38 +1,35 @@
 package com.example.mohago_nocar.transit.domain.model;
 
+import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import lombok.Getter;
+import lombok.ToString;
 
 import static com.example.mohago_nocar.transit.domain.model.PathType.SUBWAY;
 
 @Getter
+@ToString
 public class SubwayPath extends SubPath{
-    private final String subwayLineName; // 지하철 노선명
-    private final String startName; // 출발 지점 이름
-    private final double startX; // 출발 지점 X 좌표
-    private final double startY; // 출발 지점 Y 좌표
-    private final String endName; // 도착 지점 이름
-    private final double endX; // 도착 지점 X 좌표
-    private final double endY; // 도착 지점 Y 좌표
+    private final String subwayLineName;
+    private final String startName;
+    private final Coordinate startCoordinate;
+    private final String endName;
+    private final Coordinate endCoordinate;
 
     public SubwayPath(
             double distance,
             int sectionTime,
             String subwayLineName,
             String startName,
-            double startX,
-            double startY,
+            Coordinate startCoordinate,
             String endName,
-            double endX,
-            double endY
+            Coordinate endCoordinate
     ) {
         super(distance, sectionTime);
         this.subwayLineName = subwayLineName;
         this.startName = startName;
-        this.startX = startX;
-        this.startY = startY;
+        this.startCoordinate = startCoordinate;
         this.endName = endName;
-        this.endX = endX;
-        this.endY = endY;
+        this.endCoordinate = endCoordinate;
     }
 
     @Override
@@ -40,18 +37,4 @@ public class SubwayPath extends SubPath{
         return SUBWAY;
     }
 
-    @Override
-    public String toString() {
-        return "SubwayPath{" +
-                "subwayLineName='" + subwayLineName + '\'' +
-                ", startName='" + startName + '\'' +
-                ", startX=" + startX +
-                ", startY=" + startY +
-                ", endName='" + endName + '\'' +
-                ", endX=" + endX +
-                ", endY=" + endY +
-                ", distance=" + distance +
-                ", sectionTime=" + sectionTime +
-                '}';
-    }
 }

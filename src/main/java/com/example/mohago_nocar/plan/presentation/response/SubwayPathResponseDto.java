@@ -1,10 +1,8 @@
 package com.example.mohago_nocar.plan.presentation.response;
 
-import com.example.mohago_nocar.transit.domain.model.PathType;
 import com.example.mohago_nocar.transit.domain.model.SubPath;
 import com.example.mohago_nocar.transit.domain.model.SubwayPath;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.Getter;
 
 import static com.example.mohago_nocar.transit.domain.model.PathType.SUBWAY;
@@ -24,15 +22,15 @@ public class SubwayPathResponseDto extends SubPathResponseDto{
         SubwayPath subwayPath = (SubwayPath) subPath;
 
         return SubwayPathResponseDto.builder()
-                .distance(subwayPath.getDistance())
-                .sectionTime(subwayPath.getSectionTime())
+                .distance(subwayPath.getDistanceKm())
+                .sectionTime(subwayPath.getSectionTimeMin())
                 .subwayLineName(subwayPath.getSubwayLineName())
                 .startPlaceName(subwayPath.getStartName())
-                .startLongitude(subwayPath.getStartX())
-                .startLatitude(subwayPath.getStartY())
+                .startLongitude(subwayPath.getStartCoordinate().getLongitude())
+                .startLatitude(subwayPath.getStartCoordinate().getLatitude())
                 .endPlaceName(subwayPath.getEndName())
-                .endLongitude(subwayPath.getEndX())
-                .endLatitude(subwayPath.getEndY())
+                .endLongitude(subwayPath.getEndCoordinate().getLongitude())
+                .endLatitude(subwayPath.getEndCoordinate().getLatitude())
                 .build();
     }
 

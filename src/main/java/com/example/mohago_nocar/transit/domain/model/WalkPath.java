@@ -1,8 +1,10 @@
 package com.example.mohago_nocar.transit.domain.model;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class WalkPath extends SubPath{
 
     public WalkPath(double distance, int sectionTime) {
@@ -14,11 +16,4 @@ public class WalkPath extends SubPath{
         return PathType.WALK;
     }
 
-    @Override
-    public String toString() {
-        return "WalkPath{" +
-                "distance=" + distance +
-                ", sectionTime=" + sectionTime +
-                '}';
-    }
 }
