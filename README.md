@@ -21,6 +21,12 @@
 No Car 서버는 **자가용 없이**도 **편리하고 즐거운 여행**을 할 수 있도록 지원하여, 더 많은 사람들이 환경을 생각하며 여행을 즐길 수 있도록 하는 것을 목표로 합니다.
 
 ---
+## 🛠️ 시스템 아키텍처
+![아키텍처_모하고노카 drawio](https://github.com/user-attachments/assets/d02d63fe-dbd9-4e81-bc85-9e6af9d62282)
+
+
+
+---
 
 ## 👨🏻‍💻 Developer
 <div align=center>
