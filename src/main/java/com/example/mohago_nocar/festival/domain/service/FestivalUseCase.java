@@ -1,9 +1,9 @@
 package com.example.mohago_nocar.festival.domain.service;
 
 import com.example.mohago_nocar.festival.domain.model.Festival;
-import com.example.mohago_nocar.festival.presentation.response.FestivalActivePeriodResponseDto;
-import com.example.mohago_nocar.festival.presentation.response.FestivalLocationResponseDto;
-import com.example.mohago_nocar.festival.presentation.response.FestivalResponseDto;
+import com.example.mohago_nocar.festival.application.response.FestivalActivePeriodResponseDto;
+import com.example.mohago_nocar.festival.application.response.FestivalLocationResponseDto;
+import com.example.mohago_nocar.festival.application.response.FestivalResponseDto;
 import com.example.mohago_nocar.global.common.dto.PagedResponseDto;
 
 import java.util.List;

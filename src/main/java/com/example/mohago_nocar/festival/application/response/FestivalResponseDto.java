@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.festival.presentation.response;
+package com.example.mohago_nocar.festival.application.response;
 
 import com.example.mohago_nocar.festival.domain.model.Festival;
 import com.example.mohago_nocar.festival.domain.model.vo.ActivePeriod;

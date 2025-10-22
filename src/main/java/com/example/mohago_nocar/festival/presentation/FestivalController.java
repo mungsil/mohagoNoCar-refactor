@@ -1,8 +1,8 @@
 package com.example.mohago_nocar.festival.presentation;
 
 import com.example.mohago_nocar.festival.domain.service.FestivalUseCase;
-import com.example.mohago_nocar.festival.presentation.response.FestivalActivePeriodResponseDto;
-import com.example.mohago_nocar.festival.presentation.response.FestivalResponseDto;
+import com.example.mohago_nocar.festival.application.response.FestivalActivePeriodResponseDto;
+import com.example.mohago_nocar.festival.application.response.FestivalResponseDto;
 import com.example.mohago_nocar.global.common.dto.PagedResponseDto;
 import com.example.mohago_nocar.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;

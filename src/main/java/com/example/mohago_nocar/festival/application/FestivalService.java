@@ -5,10 +5,9 @@ import com.example.mohago_nocar.festival.domain.model.FestivalImage;
 import com.example.mohago_nocar.festival.domain.repository.FestivalRepository;
 import com.example.mohago_nocar.festival.domain.service.FestivalImageUseCase;
 import com.example.mohago_nocar.festival.domain.service.FestivalUseCase;
-import com.example.mohago_nocar.festival.presentation.exception.FestivalNotFoundException;
-import com.example.mohago_nocar.festival.presentation.response.FestivalActivePeriodResponseDto;
-import com.example.mohago_nocar.festival.presentation.response.FestivalLocationResponseDto;
-import com.example.mohago_nocar.festival.presentation.response.FestivalResponseDto;
+import com.example.mohago_nocar.festival.application.response.FestivalActivePeriodResponseDto;
+import com.example.mohago_nocar.festival.application.response.FestivalLocationResponseDto;
+import com.example.mohago_nocar.festival.application.response.FestivalResponseDto;
 import com.example.mohago_nocar.global.common.dto.PagedResponseDto;
 
 import java.util.List;
