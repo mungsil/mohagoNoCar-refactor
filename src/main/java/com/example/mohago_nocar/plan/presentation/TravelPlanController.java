@@ -3,7 +3,7 @@ package com.example.mohago_nocar.plan.presentation;
 import com.example.mohago_nocar.global.common.response.ApiResponse;
 import com.example.mohago_nocar.plan.domain.service.TravelPlanUseCase;
 import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
-import com.example.mohago_nocar.plan.presentation.response.PlanTravelCourseResponseDto;
+import com.example.mohago_nocar.plan.application.response.PlanTravelCourseResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

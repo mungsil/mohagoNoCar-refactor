@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.plan.presentation.response;
+package com.example.mohago_nocar.plan.application.response;
 
 import lombok.Builder;
 

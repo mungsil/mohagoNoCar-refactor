@@ -11,8 +11,8 @@ import com.example.mohago_nocar.plan.application.strategy.RouteOptimizationStrat
 import com.example.mohago_nocar.plan.domain.model.Location;
 import com.example.mohago_nocar.plan.domain.service.TravelPlanUseCase;
 import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
-import com.example.mohago_nocar.plan.presentation.response.PlanTravelCourseResponseDto;
-import com.example.mohago_nocar.plan.presentation.response.TravelRouteResponseDto;
+import com.example.mohago_nocar.plan.application.response.PlanTravelCourseResponseDto;
+import com.example.mohago_nocar.plan.application.response.TravelRouteResponseDto;
 import com.example.mohago_nocar.transit.domain.model.TransitRoute;
 import com.example.mohago_nocar.transit.infrastructure.distanceDuration.DistanceDurationApiAdapter;
 import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiAdapter;
