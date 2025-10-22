@@ -41,6 +41,7 @@ public class TravelPlanService implements TravelPlanUseCase {
     private final ExecutorService virtualThreadExecutor;
     private final TransitRouteApiAdapter transitRouteApiAdapter;
     private final DistanceDurationApiAdapter distanceDurationApiAdapter;
+    private final Semaphore semaphore = new Semaphore(1, true);
 
     @Override
     public PlanTravelCourseResponseDto planCourse(PlanTravelCourseRequestDto dto) {
@@ -98,7 +99,14 @@ public class TravelPlanService implements TravelPlanUseCase {
     }
 
     private List<TransitRoute> searchTransitRoutes(List<Location> optimalRouteLocations) {
-        return IntStream.range(0, optimalRouteLocations.size() - 1)
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            log.error("대중교통 경로 검색 중 스레드가 인터럽트되었습니다.", e);
+            throw new RuntimeException("대중교통 경로 검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", e);
+        }
+
+        List<TransitRoute> routes = IntStream.range(0, optimalRouteLocations.size() - 1)
                 .mapToObj(index -> {
                     Location origin = optimalRouteLocations.get(index);
                     Location destination = optimalRouteLocations.get(index + 1);
@@ -106,6 +114,9 @@ public class TravelPlanService implements TravelPlanUseCase {
                     return transitRouteApiAdapter.getTransitRouteBetweenLocations(origin, destination);
                 })
                 .toList();
+        semaphore.release();
+
+        return routes;
     }
 
     private List<Location> mapCoordinatesToLocations(
