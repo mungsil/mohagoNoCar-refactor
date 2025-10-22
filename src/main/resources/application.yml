@@ -4,7 +4,7 @@ server:
 spring:
   threads:
     virtual:
-      enabled: false
+      enabled: true
   application:
     name: mohago-nocar
   profiles:
