@@ -30,7 +30,7 @@ jobs:
               }
             });
 
-            const codeOwners = ['mingmingmon', 'mungsil'];
+            const codeOwners = ['mungsil'];
             const isAuthorCodeOwner = codeOwners.includes(prAuthor);
 
             let requiredApprovals = [];
