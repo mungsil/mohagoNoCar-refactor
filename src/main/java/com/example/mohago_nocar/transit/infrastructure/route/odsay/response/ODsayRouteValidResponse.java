@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response;
+package com.example.mohago_nocar.transit.infrastructure.route.odsay.response;
 
 import lombok.*;
 

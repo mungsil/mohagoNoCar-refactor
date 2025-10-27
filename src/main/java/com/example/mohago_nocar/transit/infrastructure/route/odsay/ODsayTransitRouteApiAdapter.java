@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.transit.infrastructure.route;
+package com.example.mohago_nocar.transit.infrastructure.route.odsay;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.plan.domain.model.Location;
@@ -7,11 +7,10 @@ import com.example.mohago_nocar.transit.domain.model.WalkPath;
 import com.example.mohago_nocar.transit.infrastructure.error.code.OdsayErrorCode;
 import com.example.mohago_nocar.transit.infrastructure.error.exception.ODsayRouteException;
 import com.example.mohago_nocar.transit.infrastructure.error.exception.ODsayDistanceException;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.ODsayApiClient;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.TransitRouteConverter;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayRouteInvalidResponse;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayRouteValidResponse;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayTransitRouteResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiAdapter;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteInvalidResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteValidResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayTransitRouteResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,5 @@
-package com.example.mohago_nocar.transit.infrastructure.route.odsay;
+package com.example.mohago_nocar.transit.infrastructure.route.odsay.response;
 
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayRouteInvalidResponse;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayTransitRouteResponse;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayRouteValidResponse;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

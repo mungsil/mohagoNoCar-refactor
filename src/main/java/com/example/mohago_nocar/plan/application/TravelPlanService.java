@@ -13,10 +13,9 @@ import com.example.mohago_nocar.plan.domain.service.TravelPlanUseCase;
 import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
 import com.example.mohago_nocar.plan.application.response.PlanTravelCourseResponseDto;
 import com.example.mohago_nocar.plan.application.response.TravelRouteResponseDto;
-import com.example.mohago_nocar.transit.domain.model.TransitRoute;
 import com.example.mohago_nocar.transit.infrastructure.distanceDuration.DistanceDurationApiAdapter;
-import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiAdapter;
 import com.example.mohago_nocar.transit.domain.model.RouteMetrics;
+import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,12 +38,11 @@ public class TravelPlanService implements TravelPlanUseCase {
     private final PlaceService placeService;
     private final RouteOptimizationStrategy routeOptimizationStrategy;
     private final ExecutorService virtualThreadExecutor;
-    private final TransitRouteApiAdapter transitRouteApiAdapter;
     private final DistanceDurationApiAdapter distanceDurationApiAdapter;
-    private final Semaphore semaphore = new Semaphore(1, true);
+    private final TransitRouteApiExecutor transitRouteApiExecutor;
 
     @Override
-    public PlanTravelCourseResponseDto planCourse(PlanTravelCourseRequestDto dto) {
+    public CompletableFuture<PlanTravelCourseResponseDto> planCourse(PlanTravelCourseRequestDto dto) {
         Festival festival = validateAndGetFestival(dto);
         List<Place> attractions = getAttractions(festival, dto.placeIds());
 
@@ -53,11 +51,9 @@ public class TravelPlanService implements TravelPlanUseCase {
         List<Coordinate> optimalRouteCoordinates = findOptimalRoute(namesByCoordinate);
         List<Location> optimalRouteLocations = mapCoordinatesToLocations(namesByCoordinate, optimalRouteCoordinates);
 
-        List<TravelRouteResponseDto> responses = searchTransitRoutes(optimalRouteLocations).stream()
-                .map(TravelRouteResponseDto::of)
-                .toList();
-
-        return PlanTravelCourseResponseDto.of(responses);
+        return transitRouteApiExecutor.execute(optimalRouteLocations)
+                .thenApply(routes -> routes.stream().map(TravelRouteResponseDto::of).toList())
+                .thenApply(PlanTravelCourseResponseDto::of);
     }
 
     private List<Coordinate> findOptimalRoute(Map<Coordinate, List<String>> namesByCoordinate) {
@@ -96,27 +92,6 @@ public class TravelPlanService implements TravelPlanUseCase {
         List<Coordinate> destinations = createDestination(coordinates, index);
 
         return distanceDurationApiAdapter.getDistanceAndDuration(origin, destinations);
-    }
-
-    private List<TransitRoute> searchTransitRoutes(List<Location> optimalRouteLocations) {
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            log.error("대중교통 경로 검색 중 스레드가 인터럽트되었습니다.", e);
-            throw new RuntimeException("대중교통 경로 검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", e);
-        }
-
-        List<TransitRoute> routes = IntStream.range(0, optimalRouteLocations.size() - 1)
-                .mapToObj(index -> {
-                    Location origin = optimalRouteLocations.get(index);
-                    Location destination = optimalRouteLocations.get(index + 1);
-
-                    return transitRouteApiAdapter.getTransitRouteBetweenLocations(origin, destination);
-                })
-                .toList();
-        semaphore.release();
-
-        return routes;
     }
 
     private List<Location> mapCoordinatesToLocations(
