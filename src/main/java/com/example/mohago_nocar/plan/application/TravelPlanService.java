@@ -15,7 +15,7 @@ import com.example.mohago_nocar.plan.application.response.PlanTravelCourseRespon
 import com.example.mohago_nocar.plan.application.response.TravelRouteResponseDto;
 import com.example.mohago_nocar.transit.infrastructure.distanceDuration.DistanceDurationApiAdapter;
 import com.example.mohago_nocar.transit.domain.model.RouteMetrics;
-import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteExecutor;
+import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class TravelPlanService implements TravelPlanUseCase {
     private final RouteOptimizationStrategy routeOptimizationStrategy;
     private final ExecutorService virtualThreadExecutor;
     private final DistanceDurationApiAdapter distanceDurationApiAdapter;
-    private final TransitRouteExecutor transitRouteApiExecutor;
+    private final TransitRouteApiExecutor transitRouteApiExecutor;
 
     @Override
     public CompletableFuture<PlanTravelCourseResponseDto> planCourse(PlanTravelCourseRequestDto dto) {

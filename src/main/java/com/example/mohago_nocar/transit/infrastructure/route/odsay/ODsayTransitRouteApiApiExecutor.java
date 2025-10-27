@@ -3,7 +3,7 @@ package com.example.mohago_nocar.transit.infrastructure.route.odsay;
 import com.example.mohago_nocar.plan.domain.model.Location;
 import com.example.mohago_nocar.transit.domain.model.TransitRoute;
 import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiAdapter;
-import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteExecutor;
+import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiExecutor;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ODsayTransitRouteApiExecutor implements TransitRouteExecutor {
+public class ODsayTransitRouteApiApiExecutor implements TransitRouteApiExecutor {
 
     private final TransitRouteApiAdapter transitRouteApiAdapter;
     private ExecutorService singleThreadExecutor;
