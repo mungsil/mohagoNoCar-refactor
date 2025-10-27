@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ODsayTransitRouteApiApiExecutor implements TransitRouteApiExecutor {
+public class ODsayTransitRouteApiExecutor implements TransitRouteApiExecutor {
 
     private final TransitRouteApiAdapter transitRouteApiAdapter;
     private ExecutorService singleThreadExecutor;
