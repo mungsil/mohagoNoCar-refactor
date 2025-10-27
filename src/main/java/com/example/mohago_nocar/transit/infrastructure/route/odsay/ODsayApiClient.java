@@ -2,7 +2,7 @@ package com.example.mohago_nocar.transit.infrastructure.route.odsay;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.global.common.exception.InternalServerException;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayTransitRouteResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayTransitRouteResponse;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterConfig;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;

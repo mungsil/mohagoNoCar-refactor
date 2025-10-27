@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/travel-plan")
@@ -21,10 +23,11 @@ public class TravelPlanController {
     private final TravelPlanUseCase travelPlanUseCase;
 
     @PostMapping
-    public ApiResponse<?> planTravelCourse(
+    public CompletableFuture<ApiResponse<?>> planTravelCourse(
             @RequestBody @Valid PlanTravelCourseRequestDto requestDto
     ) {
-        PlanTravelCourseResponseDto responseDto = travelPlanUseCase.planCourse(requestDto);
-        return ApiResponse.ok(responseDto);
+        return travelPlanUseCase.planCourse(requestDto)
+                .thenApply(ApiResponse::ok);
     }
+
 }

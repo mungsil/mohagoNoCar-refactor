@@ -3,7 +3,7 @@ package com.example.mohago_nocar.transit.infrastructure.route.odsay;
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.plan.domain.model.Location;
 import com.example.mohago_nocar.transit.domain.model.*;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayRouteValidResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteValidResponse;
 
 import java.util.List;
 

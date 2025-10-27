@@ -1,17 +1,14 @@
 package com.example.mohago_nocar.transit.infrastructure.route.odsay;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayRouteInvalidResponse;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayRouteValidResponse;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.dto.response.ODsayTransitRouteResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteInvalidResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteValidResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayTransitRouteResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
