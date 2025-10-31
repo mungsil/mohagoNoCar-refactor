@@ -1,8 +1,8 @@
-package com.example.mohago_nocar.plan.presentation;
+package com.example.mohago_nocar.plan.presentation.v2;
 
 import com.example.mohago_nocar.global.common.response.ApiResponse;
+import com.example.mohago_nocar.plan.application.v2.PlanTravelCourseResponseDtoV2;
 import com.example.mohago_nocar.plan.domain.service.TravelCourseUseCaseV1;
-import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDtoV2;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class TravelPlanControllerV2 {
     private final TravelCourseUseCaseV1 travelPlanUseCase;
 
     @PostMapping
-    public ApiResponse<TravelPlanResponseDtoV2> planTravelCourse(
+    public ApiResponse<PlanTravelCourseResponseDtoV2> planTravelCourse(
             @RequestBody @Valid PlanTravelCourseRequestDtoV2 request
     ) {
         // batch_id 생성
