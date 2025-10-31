@@ -21,7 +21,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     private static final String KEY_PREFIX = "festival:places:";
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplateForValue;
     private final ObjectMapperUtil objectMapperUtil;
 
     @Override
@@ -54,7 +54,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     private void saveToCache(String key, List<Place> places) {
         String placesJson = objectMapperUtil.writeValue(places);
-        redisTemplate.opsForValue().set(key, placesJson, 2, TimeUnit.HOURS);
+        redisTemplateForValue.opsForValue().set(key, placesJson, 2, TimeUnit.HOURS);
     }
 
     private List<Place> readFromSavedCache(String key) {
@@ -63,7 +63,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     private String readCache(String redisKey) {
-        return redisTemplate.opsForValue().get(redisKey);
+        return redisTemplateForValue.opsForValue().get(redisKey);
     }
 
     private String generateCacheKey(Long festivalId) {
