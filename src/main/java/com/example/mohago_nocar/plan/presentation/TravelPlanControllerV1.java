@@ -3,7 +3,6 @@ package com.example.mohago_nocar.plan.presentation;
 import com.example.mohago_nocar.global.common.response.ApiResponse;
 import com.example.mohago_nocar.plan.domain.service.TravelPlanUseCase;
 import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
-import com.example.mohago_nocar.plan.application.response.PlanTravelCourseResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/travel-plan")
 @Tag(name = "Plan", description = "여행 코스 설계")
-public class TravelPlanController {
+public class TravelPlanControllerV1 {
 
     private final TravelPlanUseCase travelPlanUseCase;
 
