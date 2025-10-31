@@ -1,8 +1,7 @@
-package com.example.mohago_nocar.plan.presentation;
+package com.example.mohago_nocar.plan.presentation.v1;
 
 import com.example.mohago_nocar.global.common.response.ApiResponse;
 import com.example.mohago_nocar.plan.domain.service.TravelCourseUseCaseV1;
-import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.plan.application.response;
+package com.example.mohago_nocar.plan.application.v1.response;
 
 import com.example.mohago_nocar.transit.domain.model.TransitRoute;
 import lombok.Builder;

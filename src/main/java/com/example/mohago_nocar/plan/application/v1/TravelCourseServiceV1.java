@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.plan.application;
+package com.example.mohago_nocar.plan.application.v1;
 
 import com.example.mohago_nocar.festival.domain.model.Festival;
 import com.example.mohago_nocar.festival.domain.repository.FestivalRepository;
@@ -7,12 +7,12 @@ import com.example.mohago_nocar.global.common.exception.InvalidValueException;
 import com.example.mohago_nocar.place.application.PlaceService;
 import com.example.mohago_nocar.place.domain.model.Place;
 import com.example.mohago_nocar.place.domain.repository.PlaceRepository;
-import com.example.mohago_nocar.plan.application.strategy.RouteOptimizationStrategy;
+import com.example.mohago_nocar.plan.application.v1.strategy.RouteOptimizationStrategy;
 import com.example.mohago_nocar.plan.domain.model.Location;
 import com.example.mohago_nocar.plan.domain.service.TravelCourseUseCaseV1;
-import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
-import com.example.mohago_nocar.plan.application.response.PlanTravelCourseResponseDto;
-import com.example.mohago_nocar.plan.application.response.TravelRouteResponseDto;
+import com.example.mohago_nocar.plan.presentation.v1.PlanTravelCourseRequestDto;
+import com.example.mohago_nocar.plan.application.v1.response.PlanTravelCourseResponseDto;
+import com.example.mohago_nocar.plan.application.v1.response.TravelRouteResponseDto;
 import com.example.mohago_nocar.transit.infrastructure.distanceDuration.DistanceDurationApiAdapter;
 import com.example.mohago_nocar.transit.domain.model.RouteMetrics;
 import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiExecutor;

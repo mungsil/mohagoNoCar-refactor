@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.plan.application.strategy;
+package com.example.mohago_nocar.plan.application.v1.strategy;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.transit.domain.model.RouteMetrics;
