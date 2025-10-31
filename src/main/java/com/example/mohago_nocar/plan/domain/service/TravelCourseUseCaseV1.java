@@ -5,7 +5,7 @@ import com.example.mohago_nocar.plan.application.response.PlanTravelCourseRespon
 
 import java.util.concurrent.CompletableFuture;
 
-public interface TravelPlanUseCase {
+public interface TravelCourseUseCaseV1 {
 
     CompletableFuture<PlanTravelCourseResponseDto> planCourse(PlanTravelCourseRequestDto dto);
 

@@ -1,7 +1,7 @@
 package com.example.mohago_nocar.plan.presentation;
 
 import com.example.mohago_nocar.global.common.response.ApiResponse;
-import com.example.mohago_nocar.plan.domain.service.TravelPlanUseCase;
+import com.example.mohago_nocar.plan.domain.service.TravelCourseUseCaseV1;
 import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,13 +19,13 @@ import java.util.concurrent.CompletableFuture;
 @Tag(name = "Plan", description = "여행 코스 설계")
 public class TravelPlanControllerV1 {
 
-    private final TravelPlanUseCase travelPlanUseCase;
+    private final TravelCourseUseCaseV1 travelCourseUseCaseV1;
 
     @PostMapping
     public CompletableFuture<ApiResponse<?>> planTravelCourse(
             @RequestBody @Valid PlanTravelCourseRequestDto requestDto
     ) {
-        return travelPlanUseCase.planCourse(requestDto)
+        return travelCourseUseCaseV1.planCourse(requestDto)
                 .thenApply(ApiResponse::ok);
     }
 

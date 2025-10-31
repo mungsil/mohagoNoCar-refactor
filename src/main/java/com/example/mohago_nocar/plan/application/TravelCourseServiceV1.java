@@ -9,7 +9,7 @@ import com.example.mohago_nocar.place.domain.model.Place;
 import com.example.mohago_nocar.place.domain.repository.PlaceRepository;
 import com.example.mohago_nocar.plan.application.strategy.RouteOptimizationStrategy;
 import com.example.mohago_nocar.plan.domain.model.Location;
-import com.example.mohago_nocar.plan.domain.service.TravelPlanUseCase;
+import com.example.mohago_nocar.plan.domain.service.TravelCourseUseCaseV1;
 import com.example.mohago_nocar.plan.presentation.request.PlanTravelCourseRequestDto;
 import com.example.mohago_nocar.plan.application.response.PlanTravelCourseResponseDto;
 import com.example.mohago_nocar.plan.application.response.TravelRouteResponseDto;
@@ -31,7 +31,7 @@ import static com.example.mohago_nocar.plan.presentation.exception.PlanErrorCode
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TravelPlanService implements TravelPlanUseCase {
+public class TravelCourseServiceV1 implements TravelCourseUseCaseV1 {
 
     private final PlaceRepository placeRepository;
     private final FestivalRepository festivalRepository;
