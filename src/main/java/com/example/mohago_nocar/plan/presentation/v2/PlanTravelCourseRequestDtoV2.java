@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.plan.presentation.request;
+package com.example.mohago_nocar.plan.presentation.v2;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
