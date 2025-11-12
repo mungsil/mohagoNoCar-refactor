@@ -59,12 +59,17 @@ dependencies {
 	// rate limiter
 	implementation 'io.github.resilience4j:resilience4j-ratelimiter:2.2.0'
 
+	// notification
+	implementation 'com.google.firebase:firebase-admin:9.7.0'
+
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'it.ozimov:embedded-redis:0.7.3'
 	runtimeOnly 'com.h2database:h2'
+	testImplementation 'org.assertj:assertj-core:3.27.6'
+	implementation 'net.datafaker:datafaker:2.5.3'
 }
 
 tasks.named('test') {
