@@ -3,6 +3,7 @@ package com.example.mohago_nocar.course.domain.model.routeStep;
 import com.example.mohago_nocar.global.common.domain.BaseEntity;
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
 import com.example.mohago_nocar.global.util.DurationToIntervalConverter;
+import com.example.mohago_nocar.plan.domain.model.Location;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -32,48 +33,55 @@ public class RouteStep extends BaseEntity {
     @NotNull
     private Integer stepOrder;
 
-    @NotNull
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "longitude", column = @Column(name = "start_longitude")),
-            @AttributeOverride(name = "latitude", column = @Column(name = "start_latitude"))
-    })
-    private Coordinate startCoordinate;
+    // todo subpath vs jsonB
+    // JSONB
+    private String detailPaths;
 
     @NotNull
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "longitude", column = @Column(name = "end_longitude")),
-            @AttributeOverride(name = "latitude", column = @Column(name = "end_latitude"))
+            @AttributeOverride(name = "name", column = @Column(name = "start_name")),
+            @AttributeOverride(name = "coordinate.latitude", column = @Column(name = "start_latitude")),
+            @AttributeOverride(name = "coordinate.longitude", column = @Column(name = "start_longitude"))
     })
-    private Coordinate endCoordinate;
+    private Location origin;
+
+    @NotNull
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "name", column = @Column(name = "end_name")),
+            @AttributeOverride(name = "coordinate.latitude", column = @Column(name = "end_latitude")),
+            @AttributeOverride(name = "coordinate.longitude", column = @Column(name = "end_longitude"))
+    })
+    private Location destination;
 
     @NotNull
     @Convert(converter = DurationToIntervalConverter.class)
     private Duration timeTaken;
 
     public static RouteStep from(Long courseId, Integer distance, Integer stepOrder,
-                                 Coordinate startCoordinate, Coordinate endCoordinate, Duration timeTaken
+                                 Location origin, Location destination, Duration timeTaken
     ) {
         return RouteStep.builder()
                 .courseId(courseId)
                 .distance(distance)
                 .stepOrder(stepOrder)
-                .startCoordinate(startCoordinate)
-                .endCoordinate(endCoordinate)
+                .origin(origin)
+                .destination(destination)
                 .timeTaken(timeTaken)
                 .build();
     }
 
     @Builder
     private RouteStep(Long courseId, Integer distance, Integer stepOrder,
-                      Coordinate startCoordinate, Coordinate endCoordinate, Duration timeTaken
+                      Location origin, Location destination, Duration timeTaken
     ) {
         this.courseId = courseId;
         this.distance = distance;
         this.stepOrder = stepOrder;
-        this.startCoordinate = startCoordinate;
-        this.endCoordinate = endCoordinate;
+        this.origin = origin;
+        this.destination = destination;
         this.timeTaken = timeTaken;
     }
+
 }

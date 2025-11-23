@@ -3,21 +3,44 @@ package com.example.mohago_nocar.course.domain.model.travelSpot;
 import com.example.mohago_nocar.global.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "spot_type")
-public abstract class TravelSpot extends BaseEntity {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class TravelSpot extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    protected Long id;
+    private Long id;
 
     @NotNull
-    protected Long courseId;
+    private Long courseId;
 
     @NotNull
-    protected Integer spotOrder;
+    private String placeId;
+
+    @NotNull
+    private Integer visitOrder;
+
+    public static TravelSpot from(Long courseId, String placeId, Integer visitOrder) {
+        return TravelSpot.builder()
+                .courseId(courseId)
+                .placeId(placeId)
+                .visitOrder(visitOrder)
+                .build();
+    }
+
+    @Builder
+    private TravelSpot(Long courseId, String placeId, Integer visitOrder) {
+        this.courseId = courseId;
+        this.placeId = placeId;
+        this.visitOrder = visitOrder;
+    }
+
 }
