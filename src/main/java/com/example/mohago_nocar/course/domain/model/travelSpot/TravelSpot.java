@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
+@MappedSuperclass
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TravelSpot extends BaseEntity {
+public abstract class TravelSpot extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -23,12 +23,14 @@ public class TravelSpot extends BaseEntity {
     private Long courseId;
 
     @NotNull
-    private String placeId;
-
-    @NotNull
     private Integer visitOrder;
 
-    public static TravelSpot from(Long courseId, String placeId, Integer visitOrder) {
+    protected TravelSpot(Long courseId, Integer visitOrder) {
+        this.courseId = courseId;
+        this.visitOrder = visitOrder;
+    }
+
+    /*    public static TravelSpot from(Long courseId, String placeId, Integer visitOrder) {
         return TravelSpot.builder()
                 .courseId(courseId)
                 .placeId(placeId)
@@ -41,6 +43,6 @@ public class TravelSpot extends BaseEntity {
         this.courseId = courseId;
         this.placeId = placeId;
         this.visitOrder = visitOrder;
-    }
+    }*/
 
 }
