@@ -6,6 +6,7 @@ import com.example.mohago_nocar.transit.domain.model.TransitRoute;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@Deprecated
 public interface TransitRouteApiExecutor {
 
     CompletableFuture<List<TransitRoute>> execute(final List<Location> locations);
