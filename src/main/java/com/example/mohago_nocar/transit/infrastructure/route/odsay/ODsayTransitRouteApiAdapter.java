@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @RequiredArgsConstructor
@@ -24,11 +25,11 @@ public class ODsayTransitRouteApiAdapter implements TransitRouteApiAdapter {
 
     private static final int EARTH_RADIUS = 6371;
 
-    private final ODsayApiClient odsayApiClient;
+    private final ODsayApiRateLimitedClient rateLimitedClient;
 
     @Override
     public TransitRoute getTransitRouteBetweenLocations(Location origin, Location destination) {
-        ODsayTransitRouteResponse response = odsayApiClient.searchTransitRoute(origin.getCoordinate(), destination.getCoordinate());
+        ODsayTransitRouteResponse response = rateLimitedClient.searchTransitRoute(origin.getCoordinate(), destination.getCoordinate());
         if (!response.isValid()) {
             try {
                 processInvalidResponse((ODsayRouteInvalidResponse)response);
@@ -38,6 +39,24 @@ public class ODsayTransitRouteApiAdapter implements TransitRouteApiAdapter {
         }
 
         return processValidResponse(origin, destination, response);
+    }
+
+    @Override
+    public CompletableFuture<TransitRoute> getTransitRoute(Location origin, Location destination) {
+        CompletableFuture<ODsayTransitRouteResponse> future =
+                rateLimitedClient.searchTransitRouteAsync(origin.getCoordinate(), destination.getCoordinate());
+
+        return future.thenApply(response -> {
+            if (!response.isValid()) {
+                try {
+                    processInvalidResponse((ODsayRouteInvalidResponse)response);
+                } catch (ODsayDistanceException e) {
+                    return createShortDistanceResponse(origin, destination);
+                }
+            }
+
+            return processValidResponse(origin, destination, response);
+        });
     }
 
     private void processInvalidResponse(ODsayRouteInvalidResponse response) {
