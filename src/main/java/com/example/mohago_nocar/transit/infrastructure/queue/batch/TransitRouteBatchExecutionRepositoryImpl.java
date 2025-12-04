@@ -1,7 +1,5 @@
-package com.example.mohago_nocar.transit.infrastructure.route.batch;
+package com.example.mohago_nocar.transit.infrastructure.queue.batch;
 
-import com.example.mohago_nocar.transit.domain.model.TransitRouteBatchExecution;
-import com.example.mohago_nocar.transit.domain.repository.TransitRouteBatchProgressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 @RequiredArgsConstructor
-public class TransitRouteBatchProgressRepositoryImpl implements TransitRouteBatchProgressRepository {
+public class TransitRouteBatchExecutionRepositoryImpl implements TransitRouteBatchExecutionRepository {
 
     private final TransitRouteBatchExecutionJpaRepository jpaRepository;
 

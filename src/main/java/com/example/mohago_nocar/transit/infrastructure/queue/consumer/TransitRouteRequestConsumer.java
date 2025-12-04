@@ -4,8 +4,8 @@ import com.example.mohago_nocar.global.common.exception.Status;
 import com.example.mohago_nocar.global.util.ObjectMapperUtil;
 import com.example.mohago_nocar.plan.application.v2.TravelCoursePlanNotifyService;
 import com.example.mohago_nocar.transit.domain.model.TransitRoute;
-import com.example.mohago_nocar.transit.domain.model.TransitRouteRequest;
-import com.example.mohago_nocar.transit.domain.model.BatchStatus;
+import com.example.mohago_nocar.transit.infrastructure.queue.batch.TransitRouteRequest;
+import com.example.mohago_nocar.transit.infrastructure.queue.batch.BatchStatus;
 import com.example.mohago_nocar.transit.infrastructure.error.code.OdsayErrorCode;
 import com.example.mohago_nocar.transit.infrastructure.error.exception.ODsayRouteException;
 import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiAdapter;
@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.RedisSystemException;
 import org.springframework.data.redis.connection.stream.*;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.stream.StreamListener;
@@ -38,7 +37,6 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class TransitRouteRequestConsumer implements StreamListener<String, ObjectRecord<String, String>> {
 
-    private final RedisTemplate<String, Object> objectRedisTemplate;
     @Value("${redis.streams.odsay.main}")
     private String streamKey;
 
