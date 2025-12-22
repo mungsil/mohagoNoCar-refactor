@@ -17,7 +17,7 @@ public record NearPlaceResponseDto(
 ) {
     public static NearPlaceResponseDto of(Long festivalId, Place place) {
         return new NearPlaceResponseDtoBuilder()
-                .id(place.getId())
+                .id(place.getKakaoId())
                 .name(place.getName())
                 .festivalId(festivalId)
                 .coordinate(place.getCoordinate())

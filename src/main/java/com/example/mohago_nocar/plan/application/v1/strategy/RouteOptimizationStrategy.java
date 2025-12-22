@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface RouteOptimizationStrategy {
 
-    List<Coordinate> calculateOptimalRoute(List<Coordinate> coordinates, List<RouteMetrics> routeMetrics);
+    List<? extends Coordinate> calculateOptimalRoute(List<Coordinate> coordinates, List<RouteMetrics> routeMetrics);
 
 }

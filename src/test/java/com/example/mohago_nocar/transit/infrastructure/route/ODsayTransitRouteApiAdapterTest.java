@@ -5,7 +5,7 @@ import com.example.mohago_nocar.plan.domain.model.Location;
 import com.example.mohago_nocar.transit.domain.model.TransitRoute;
 import com.example.mohago_nocar.transit.domain.model.WalkPath;
 import com.example.mohago_nocar.transit.infrastructure.error.exception.ODsayRouteException;
-import com.example.mohago_nocar.transit.infrastructure.route.odsay.ODsayApiClient;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.ODsayApiRateLimitedClient;
 import com.example.mohago_nocar.transit.infrastructure.route.odsay.ODsayTransitRouteApiAdapter;
 import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteInvalidResponse;
 import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteValidResponse;
@@ -31,7 +31,7 @@ class ODsayTransitRouteApiAdapterTest {
     ODsayTransitRouteApiAdapter adapter;
 
     @MockBean
-    ODsayApiClient odsayApiClient;
+    ODsayApiRateLimitedClient odsayApiClient;
 
     @DisplayName("odsay API가 유효한 응답을 주면 TransitRoute 객체로 변환한다.")
     @Test

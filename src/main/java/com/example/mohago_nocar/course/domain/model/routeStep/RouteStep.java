@@ -1,22 +1,27 @@
 package com.example.mohago_nocar.course.domain.model.routeStep;
 
+import com.example.mohago_nocar.course.domain.model.travelSpot.TravelSpot;
 import com.example.mohago_nocar.global.common.domain.BaseEntity;
-import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
-import com.example.mohago_nocar.global.util.DurationToIntervalConverter;
-import com.example.mohago_nocar.plan.domain.model.Location;
+import com.example.mohago_nocar.transit.domain.model.SubPath;
+import com.example.mohago_nocar.transit.domain.model.TransitRoute;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.Type;
 
-import java.time.Duration;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@Table(name = "route_step")
+@ToString
 @NoArgsConstructor(access = PROTECTED)
 public class RouteStep extends BaseEntity {
 
@@ -24,64 +29,40 @@ public class RouteStep extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotNull
-    private Long courseId;
+    private Long originSpotId;
+
+    private Long destinationSpotId;
+
+    @Type(JsonBinaryType.class)
+    @Column(columnDefinition = "jsonb")
+    private List<SubPath> detailPaths; // subpath는 transit 건데, 그럼 dto도 transit에 있어야하는게 적절하지 않나
 
     @NotNull
-    private Integer distance;
+    private Double distanceKm;
 
-    @NotNull
-    private Integer stepOrder;
+    private Integer timeTakenMin;
 
-    // todo subpath vs jsonB
-    // JSONB
-    private String detailPaths;
-
-    @NotNull
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "name", column = @Column(name = "start_name")),
-            @AttributeOverride(name = "coordinate.latitude", column = @Column(name = "start_latitude")),
-            @AttributeOverride(name = "coordinate.longitude", column = @Column(name = "start_longitude"))
-    })
-    private Location origin;
-
-    @NotNull
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "name", column = @Column(name = "end_name")),
-            @AttributeOverride(name = "coordinate.latitude", column = @Column(name = "end_latitude")),
-            @AttributeOverride(name = "coordinate.longitude", column = @Column(name = "end_longitude"))
-    })
-    private Location destination;
-
-    @NotNull
-    @Convert(converter = DurationToIntervalConverter.class)
-    private Duration timeTaken;
-
-    public static RouteStep from(Long courseId, Integer distance, Integer stepOrder,
-                                 Location origin, Location destination, Duration timeTaken
+    public static RouteStep from(
+            TravelSpot origin, TravelSpot destination, TransitRoute transitRoute
     ) {
+        List<SubPath> subPaths = transitRoute.getSubPaths();
         return RouteStep.builder()
-                .courseId(courseId)
-                .distance(distance)
-                .stepOrder(stepOrder)
-                .origin(origin)
-                .destination(destination)
-                .timeTaken(timeTaken)
+                .originSpotId(origin.getId())
+                .destinationSpotId(destination.getId())
+                .timeTakenMin(transitRoute.getTotalTime())
+                .distanceKm(transitRoute.getTotalDistance())
+                .detailPaths(subPaths)
                 .build();
     }
 
     @Builder
-    private RouteStep(Long courseId, Integer distance, Integer stepOrder,
-                      Location origin, Location destination, Duration timeTaken
-    ) {
-        this.courseId = courseId;
-        this.distance = distance;
-        this.stepOrder = stepOrder;
-        this.origin = origin;
-        this.destination = destination;
-        this.timeTaken = timeTaken;
+    private RouteStep(Long originSpotId, Long destinationSpotId, List<SubPath> detailPaths,
+                      Double distanceKm, Integer timeTakenMin) {
+        this.originSpotId = originSpotId;
+        this.destinationSpotId = destinationSpotId;
+        this.detailPaths = detailPaths;
+        this.distanceKm = distanceKm;
+        this.timeTakenMin = timeTakenMin;
     }
 
 }

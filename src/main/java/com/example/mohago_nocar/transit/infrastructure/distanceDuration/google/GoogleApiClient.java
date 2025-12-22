@@ -5,27 +5,34 @@ import com.example.mohago_nocar.transit.infrastructure.distanceDuration.google.d
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class GoogleApiClient {
 
-    private final RestClient restClient;
+    private final WebClient webClient;
     private final String apiKey;
     private final String baseUrl;
 
+    private static final String DELIMITER_COMMA = "," ;
+    private static final String PIPE = "|" ;
+
     public GoogleApiClient(
-            RestClient restClient,
             @Value("${google.api-key}") String apiKey,
             @Value("${google.maps.distance}") String baseUrl
     ) {
-        this.restClient = restClient;
+        this.webClient = WebClient.builder().build();
         this.apiKey = apiKey;
         this.baseUrl = baseUrl;
     }
@@ -45,31 +52,55 @@ public class GoogleApiClient {
      * @return 행렬에 기반한 (출발지, 목적지)와 관련된 데이터를 반환합니다.
      */
     public GoogleDistanceMatrixResponse getDistanceMatrix(Coordinate origin, List<Coordinate> destinations) {
-        URI requestUri = UriComponentsBuilder.fromUriString(baseUrl)
-                .queryParam("origins", formatCoordinates(origin))
-                .queryParam("destinations", formatCoordinates(destinations))
+        URI requestUri = buildUri(origin, destinations.stream());
+        return executeApiCall(requestUri);
+    }
+
+    public CompletableFuture<GoogleDistanceMatrixResponse> getDistanceMatrixAsync(Coordinate origin, Set<Coordinate> destinations) {
+        URI requestUri = buildUri(origin, destinations.stream());
+        return executeApiCallAsync(requestUri);
+    }
+
+    private URI buildUri(Coordinate origin, Stream<Coordinate> destinations) {
+        return UriComponentsBuilder.fromUriString(baseUrl)
+                .queryParam("origins", encodeCoordinate(origin))
+                .queryParam("destinations", encodeCoordinates(destinations))
                 .queryParam("language", "ko")
                 .queryParam("mode", "transit")
                 .queryParam("key", apiKey)
                 .build(true)
                 .toUri();
+    }
 
-        return restClient.get()
+    private CompletableFuture<GoogleDistanceMatrixResponse> executeApiCallAsync(URI requestUri) {
+        return webClient.get()
                 .uri(requestUri)
                 .retrieve()
-                .body(GoogleDistanceMatrixResponse.class);
+                .bodyToMono(GoogleDistanceMatrixResponse.class)
+                .toFuture();
     }
 
-    private String formatCoordinates(Coordinate origin) {
-        return origin.getLatitude() + "," + origin.getLongitude();
+    private GoogleDistanceMatrixResponse executeApiCall(URI requestUri) {
+        return webClient.get()
+                .uri(requestUri)
+                .retrieve()
+                .bodyToMono(GoogleDistanceMatrixResponse.class)
+                .block();
     }
 
-    private String formatCoordinates(List<Coordinate> coordinates) {
+    private String encodeCoordinate(Coordinate origin) {
+        return origin.getLatitude() + DELIMITER_COMMA + origin.getLongitude();
+    }
+
+    /**
+     * Coordinate 스트림을 "위도,경도|위도,경도|..." 형태로 변환 후 URL 인코딩합니다.
+     */
+    private String encodeCoordinates(Stream<Coordinate> coordinates) {
         return URLEncoder.encode(
-                coordinates.stream()
-                        .map(location -> location.getLatitude() + "," + location.getLongitude())
-                        .collect(Collectors.joining("|"))
-                ,StandardCharsets.UTF_8
+                coordinates
+                        .map(location -> location.getLatitude() + DELIMITER_COMMA + location.getLongitude())
+                        .collect(Collectors.joining(PIPE)),
+                StandardCharsets.UTF_8
         );
     }
 

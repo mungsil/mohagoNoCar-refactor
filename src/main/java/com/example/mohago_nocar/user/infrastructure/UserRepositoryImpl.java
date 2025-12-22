@@ -26,4 +26,9 @@ public class UserRepositoryImpl implements UserRepository {
         return anonymousUserJpaRepository.findById(userId);
     }
 
+    @Override
+    public Optional<AnonymousUser> findByFcm(String fcmToken) {
+        return anonymousUserJpaRepository.findByFcmToken(fcmToken);
+    }
+
 }

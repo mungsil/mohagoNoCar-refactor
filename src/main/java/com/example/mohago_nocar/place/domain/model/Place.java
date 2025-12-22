@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.EnumType.STRING;
 
+// 이거 레디스 해시예욤...
 @Getter
 @NoArgsConstructor
 public class Place {
 
     @NotNull
-    private String id;
+    private String kakaoId;
 
     @NotNull
     private String name;
@@ -33,7 +34,7 @@ public class Place {
     private PlaceCategory category;
 
     public static Place from(
-            String id,
+            String kakaoId,
             String name,
             Coordinate coordinate,
             String address,
@@ -41,7 +42,7 @@ public class Place {
             PlaceCategory category
     ) {
         return Place.builder()
-                .id(id)
+                .kakaoId(kakaoId)
                 .name(name)
                 .coordinate(coordinate)
                 .address(address)
@@ -52,14 +53,14 @@ public class Place {
 
     @Builder
     private Place(
-            String id,
+            String kakaoId,
             String name,
             Coordinate coordinate,
             String address,
             String placeUrl,
             PlaceCategory category
     ) {
-        this.id = id;
+        this.kakaoId = kakaoId;
         this.name = name;
         this.coordinate = coordinate;
         this.address = address;

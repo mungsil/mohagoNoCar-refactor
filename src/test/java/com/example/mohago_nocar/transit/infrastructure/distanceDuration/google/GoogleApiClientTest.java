@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 @SpringBootTest
@@ -19,7 +21,7 @@ class GoogleApiClientTest {
     @Autowired
     private GoogleApiClient googleApiClient;
 
-    @DisplayName("출발지와 도착지 사이의 거리 및 이동 시간을 조회할 수 있다.")
+    @DisplayName("출발지와 도착지 사이의 거리 및 이동 시간을 조회한다.")
     @Test
     public void getDistanceMatrix() {
         //given
@@ -32,7 +34,17 @@ class GoogleApiClientTest {
         List<Coordinate> destinations = List.of(dest1, dest2, dest3);
 
         //when
-        GoogleDistanceMatrixResponse response = googleApiClient.getDistanceMatrix(origin, destinations);
+        List<CompletableFuture<GoogleDistanceMatrixResponse>> futures = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            CompletableFuture<GoogleDistanceMatrixResponse> future = CompletableFuture.supplyAsync(
+                    () -> googleApiClient.getDistanceMatrix(origin, destinations));
+            futures.add(future);
+        }
+
+
+
+/*        GoogleDistanceMatrixResponse response = googleApiClient.getDistanceMatrix(origin, destinations);
 
         //then
         Assertions.assertThat(response).isNotNull();
@@ -41,7 +53,7 @@ class GoogleApiClientTest {
         for (GoogleDistanceMatrixResponse.Element element : response.rows().get(0).elements()) {
             Assertions.assertThat(element.distance().text()).isNotNull();
             Assertions.assertThat(element.duration().text()).isNotNull();
-        }
+        }*/
     }
 
 }

@@ -32,6 +32,7 @@ public class ODsayTransitRouteResponseDeserializer extends JsonDeserializer<ODsa
     }
 
     private ODsayTransitRouteResponse createInvalidResponse(JsonNode responseJson) {
+        log.info(responseJson.asText());
         var errorInfoJson = find(responseJson, "error").get();
         var errorCode = getFields(errorInfoJson, "code");
         var errorMessage = getFields(errorInfoJson, "message", "msg");

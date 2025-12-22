@@ -1,9 +1,9 @@
 package com.example.mohago_nocar.global.messaging;
 
-import com.example.mohago_nocar.course.infrastructure.stream.DeadLetterQueueEntryDto;
 import com.example.mohago_nocar.global.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
@@ -48,9 +48,6 @@ public class DeadLetterQueueEntry extends BaseEntity {
     @Comment("스택 트레이스")
     private String stackTrace;
 
-    @Comment("전달 시도 횟수")
-    private Long deliveryCount;
-
     @Column(length = 100)
     @Comment("마지막 처리 컨슈머")
     private String lastConsumer;
@@ -67,7 +64,7 @@ public class DeadLetterQueueEntry extends BaseEntity {
     @Builder(access = AccessLevel.PRIVATE)
     private DeadLetterQueueEntry(String streamKey, String consumerGroup, String entryId,
                                  String payload, String exceptionType, String errorMessage,
-                                 String stackTrace, Long deliveryCount, String lastConsumer,
+                                 String stackTrace, String lastConsumer,
                                  DLQStatus status, LocalDateTime resolvedAt) {
         this.streamKey = streamKey;
         this.consumerGroup = consumerGroup;
@@ -76,7 +73,6 @@ public class DeadLetterQueueEntry extends BaseEntity {
         this.exceptionType = exceptionType;
         this.errorMessage = errorMessage;
         this.stackTrace = stackTrace;
-        this.deliveryCount = deliveryCount;
         this.lastConsumer = lastConsumer;
         this.status = status;
         this.resolvedAt = resolvedAt;
@@ -88,7 +84,6 @@ public class DeadLetterQueueEntry extends BaseEntity {
                 .consumerGroup(dto.getGroupName())
                 .entryId(dto.getId())
                 .payload(dto.getPayload())
-                .deliveryCount(dto.getDeliveryCount())
                 .lastConsumer(dto.getConsumerName())
                 .status(DLQStatus.NEW);
 
@@ -96,7 +91,7 @@ public class DeadLetterQueueEntry extends BaseEntity {
             Throwable throwable = dto.getThrowable();
             return builder.errorMessage(throwable.getMessage())
                     .exceptionType(throwable.getClass().getSimpleName())
-                    .stackTrace(throwable.getStackTrace().toString())
+                    .stackTrace(ExceptionUtils.getStackTrace(throwable))
                     .build();
         } else {
             return builder.build();

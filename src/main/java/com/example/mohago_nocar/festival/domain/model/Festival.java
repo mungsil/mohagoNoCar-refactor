@@ -14,6 +14,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@Table(name = "festival")
 @NoArgsConstructor(access = PROTECTED)
 public class Festival extends BaseEntity {
 
@@ -62,4 +63,9 @@ public class Festival extends BaseEntity {
     public boolean isDateDuringFestival(LocalDate travelDate) {
         return activePeriod.containsDate(travelDate);
     }
+
+    public boolean isOpen(LocalDate travelDate) {
+        return activePeriod.containsDate(travelDate);
+    }
+
 }

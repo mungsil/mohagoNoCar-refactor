@@ -15,7 +15,7 @@ public class ShortestTimeRouteStrategy implements RouteOptimizationStrategy {
     private static final int FIRST = 0;
 
     @Override
-    public List<Coordinate> calculateOptimalRoute(List<Coordinate> coordinates, List<RouteMetrics> routeMetrics) {
+    public List<? extends Coordinate> calculateOptimalRoute(List<Coordinate> coordinates, List<RouteMetrics> routeMetrics) {
         int locationCount = coordinates.size();
         Map<Coordinate, Map<Coordinate, RouteMetrics>> fromToTransitInfoMap = new HashMap<>();
 

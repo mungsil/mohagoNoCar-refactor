@@ -9,6 +9,6 @@ public interface TransitRouteApiAdapter {
 
     TransitRoute getTransitRouteBetweenLocations(Location origin, Location destination);
 
-    CompletableFuture<TransitRoute> getTransitRoute(Location origin, Location destination);
+    CompletableFuture<TransitRoute> getTransitRouteWithThrottling(Location origin, Location destination);
 
 }

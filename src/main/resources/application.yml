@@ -1,10 +1,23 @@
 server:
   port: ${SERVER_PORT:8080}
 
+sentry:
+  dsn: https://b7b02a49b4031327059e36430753f700@o4510496632930304.ingest.us.sentry.io/4510496642695168
+  # Add data like request headers and IP for users,
+  # see https://docs.sentry.io/platforms/java/guides/spring-boot/data-management/data-collected/ for more info
+  send-default-pii: true
+  exception-resolver-order: -2147483647
+  logging:
+    minimum-event-level: warn
+    minimum-breadcrumb-level: info
+    minimum-level: info
+  logs:
+    enabled: true
+
 spring:
   threads:
     virtual:
-      enabled: true
+      enabled: false
   application:
     name: mohago-nocar
   profiles:
@@ -27,7 +40,7 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6379
+      port: 6378
 
 springdoc:
   default-consumes-media-type: application/json
@@ -37,21 +50,68 @@ springdoc:
     tags-sorter: alpha
 
 odsay:
-  url: https://api.odsay.com/v1/api/searchPubTransPathT
-  api-key: ${ODSAY_API_KEY}
+  request-url: https://api.odsay.com/v1/api/searchPubTransPathT
+  key: ${ODSAY_API_KEY}
+  execution-interval-mills: 230
+
+redis:
+  streams:
+    odsay:
+      main: odsay-transit-api-requests
+      dlq: odsay-api-failures
+    plan:
+      main: plan-events
+      dlq: plan-events-failures
+    course:
+      optimized:
+        main: optimized-course
+        dlq: travel-spot-optimized-failures #삭제
 
 google:
   maps:
     distance : https://maps.googleapis.com/maps/api/distancematrix/json
   api-key : ${GOOGLE_API_KEY}
+  firebase:
+    key:
+      path: ${FIREBASE_KEY_PATH}
 
 kakao:
   local:
     category: https://dapi.kakao.com/v2/local/search/category
   api-key: ${KAKAO_API_KEY}
 
+discord:
+  webhook-url: sdfdsfdsf
+
+logging:
+  level:
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
+    org.hibernate.engine.transaction.internal.TransactionImpl: DEBUG
+    root: info
+#    org.springframework.jdbc.datasource.DataSourceUtils: DEBUG
+#    com.zaxxer.hikari: DEBUG
+#    org.springframework.data.redis.stream: TRACE
+#    org.springframework.data.redis: TRACE
+#    org.hibernate.SQL: debug
+#    org.hibernate.orm.jdbc.bind: trace
+#    com.fasterxml.jackson.databind: DEBUG
+#    org.springframework.http.converter.json: trace
+#    io.sentry: trace
+
 #logging:
 #  level:
+#    root: info
+#    com:
+#      google:
+#        firebase: debug
+#
+#    io.lettuce.core.protocol: TRACE
+#    io.lettuce.core.RedisClient: TRACE
+#    org.springframework.data.redis: trace
+#    io:
+#      lettuce: trace
+
 #    root: debug
 #    jdk.virtualThread: debug
 
@@ -70,10 +130,18 @@ spring:
 #    url: jdbc:h2:mem:~/mohagoNoCar
 #    username: sa
 #    password:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/mohagoNoCarTest
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
 #  jpa:
 #    database-platform: org.hibernate.dialect.H2Dialect
 #    hibernate:
-#      ddl-auto: create
+#      ddl-auto: update
 #    properties:
 #      hibernate:
 #        dialect: org.hibernate.dialect.H2Dialect

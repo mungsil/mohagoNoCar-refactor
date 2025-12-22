@@ -11,6 +11,7 @@ import com.example.mohago_nocar.transit.infrastructure.route.TransitRouteApiAdap
 import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteInvalidResponse;
 import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayRouteValidResponse;
 import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayTransitRouteResponse;
+import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.TransitRouteConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -42,7 +43,7 @@ public class ODsayTransitRouteApiAdapter implements TransitRouteApiAdapter {
     }
 
     @Override
-    public CompletableFuture<TransitRoute> getTransitRoute(Location origin, Location destination) {
+    public CompletableFuture<TransitRoute> getTransitRouteWithThrottling(Location origin, Location destination) {
         CompletableFuture<ODsayTransitRouteResponse> future =
                 rateLimitedClient.searchTransitRouteAsync(origin.getCoordinate(), destination.getCoordinate());
 
@@ -71,6 +72,7 @@ public class ODsayTransitRouteApiAdapter implements TransitRouteApiAdapter {
     }
 
     private TransitRoute processValidResponse(Location origin, Location destination, ODsayTransitRouteResponse response) {
+        log.info("Odsay API response: {}", response);
         return TransitRouteConverter.convertToTransitRoute((ODsayRouteValidResponse) response, origin, destination);
     }
 
@@ -102,7 +104,7 @@ public class ODsayTransitRouteApiAdapter implements TransitRouteApiAdapter {
     }
 
     private Double convertLongitudeToKmDist(Double dx, Double stdLatitude) {
-        return EARTH_RADIUS * dx * Math.cos(stdLatitude) * Math.PI / 180;
+        return EARTH_RADIUS * dx * Math.cos(Math.toRadians(stdLatitude)) * Math.PI / 180;
     }
 
     private Double convertLatitudeToKmDist(Double dy) {

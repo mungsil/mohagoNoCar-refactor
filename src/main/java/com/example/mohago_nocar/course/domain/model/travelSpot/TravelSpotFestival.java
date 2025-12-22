@@ -32,7 +32,7 @@ public class TravelSpotFestival extends TravelSpot{
                 .build();
     }
 
-    public static TravelSpotFestival createUnOrderedSpot(
+    public static TravelSpotFestival createWithNoOrder(
             TravelCourse course, Festival festival) {
         return TravelSpotFestival.builder()
                 .courseId(course.getId())

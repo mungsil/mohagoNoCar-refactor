@@ -32,7 +32,7 @@ public class TravelSpotPlace extends TravelSpot{
                 .build();
     }
 
-    public static TravelSpotPlace createUnOrderedSpot(TravelCourse course, Place place) {
+    public static TravelSpotPlace createWithNoOrder(TravelCourse course, Place place) {
         return TravelSpotPlace.builder()
                 .courseId(course.getId())
                 .visitOrder(null)

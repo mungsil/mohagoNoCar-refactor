@@ -1,15 +1,18 @@
 package com.example.mohago_nocar.course.domain.model.travelSpot;
 
+import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
+import com.example.mohago_nocar.festival.domain.model.Festival;
 import com.example.mohago_nocar.global.common.domain.BaseEntity;
+import com.example.mohago_nocar.place.domain.model.Place;
 import com.example.mohago_nocar.plan.domain.model.Location;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -17,6 +20,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "spot_type")
+@Table(name = "travel_spot")
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class TravelSpot extends BaseEntity implements Comparable<TravelSpot> {
 

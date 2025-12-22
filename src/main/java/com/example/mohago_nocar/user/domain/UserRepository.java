@@ -8,4 +8,6 @@ public interface UserRepository {
     AnonymousUser save(AnonymousUser identifier);
 
     Optional<AnonymousUser> findById(UUID userId);
+
+    Optional<AnonymousUser> findByFcm(String fcmToken);
 }

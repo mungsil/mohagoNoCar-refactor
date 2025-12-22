@@ -23,7 +23,7 @@ public class SubwayPathResponseDto extends SubPathResponseDto{
 
         return SubwayPathResponseDto.builder()
                 .distance(subwayPath.getDistanceKm())
-                .sectionTime(subwayPath.getSectionTimeMin())
+                .sectionTime(subwayPath.getTimeTakenMin())
                 .subwayLineName(subwayPath.getSubwayLineName())
                 .startPlaceName(subwayPath.getStartName())
                 .startLongitude(subwayPath.getStartCoordinate().getLongitude())

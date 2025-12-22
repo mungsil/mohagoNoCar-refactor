@@ -23,9 +23,28 @@ public class UserService implements UserUseCase {
     }
 
     @Override
-    public AnonymousUser findById(UUID userId) {
-        Optional<AnonymousUser> optionalUser = userRepository.findById(userId);
-        return optionalUser.orElseThrow(() -> new CustomException(GlobalStatus.ENTITY_NOT_FOUND));
+    public String getFcmToken(UUID userId) {
+        AnonymousUser user = findByIdOrThrow(userId);
+        return user.getFcmToken();
+    }
+
+    @Override
+    public AnonymousUser findByIdOrThrow(UUID userId) {
+        return findById(userId).orElseThrow(() -> new CustomException(GlobalStatus.ENTITY_NOT_FOUND));
+    }
+
+    @Override
+    public Optional<AnonymousUser> findById(UUID userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
+    public AnonymousUser getOrCreate(String fcmToken) {
+        return userRepository.findByFcm(fcmToken)
+                .orElseGet(()-> {
+                    AnonymousUser created = AnonymousUser.create(fcmToken);
+                    return save(created);
+                });
     }
 
 }

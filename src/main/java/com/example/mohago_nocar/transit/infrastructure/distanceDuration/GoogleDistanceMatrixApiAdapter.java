@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Component
 @RequiredArgsConstructor
@@ -24,11 +27,27 @@ public class GoogleDistanceMatrixApiAdapter implements DistanceDurationApiAdapte
     @Override
     public List<RouteMetrics> getDistanceAndDuration(Coordinate origin, List<Coordinate> destinations) {
         GoogleDistanceMatrixResponse response = googleApiClient.getDistanceMatrix(origin, destinations);
+
+        log.info("Distance matrix response: {}", response);
         if (GoogleResponseValidator.hasError(response)) {
             processInvalidResponse(response);
         }
 
         return processValidResponse(origin, destinations, response);
+    }
+
+    @Override
+    public CompletableFuture<List<RouteMetrics>> getDistanceAndDurationAsync(Coordinate origin, Set<Coordinate> destinations) {
+        CompletableFuture<GoogleDistanceMatrixResponse> distanceMatrixFuture =
+                googleApiClient.getDistanceMatrixAsync(origin, destinations);
+
+        return distanceMatrixFuture.thenApply(response -> {
+            if (GoogleResponseValidator.hasError(response)) {
+                processInvalidResponse(response);
+            }
+
+            return processValidResponse(origin, destinations.stream().toList(), response);
+        });
     }
 
     private void processInvalidResponse(GoogleDistanceMatrixResponse response) {
@@ -41,7 +60,8 @@ public class GoogleDistanceMatrixApiAdapter implements DistanceDurationApiAdapte
         }
     }
 
-    private List<RouteMetrics> processValidResponse(Coordinate origin, List<Coordinate> destinations, GoogleDistanceMatrixResponse response) {
+    private List<RouteMetrics> processValidResponse(
+            Coordinate origin, List<Coordinate> destinations, GoogleDistanceMatrixResponse response) {
         return DistanceDurationConverter.convertMatrixToRouteMetrics(response, origin, destinations);
     }
 

@@ -1,9 +1,8 @@
 package com.example.mohago_nocar.global.messaging;
 
-import com.example.mohago_nocar.course.infrastructure.stream.DeadLetterQueueEntryDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -12,7 +11,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class DeadLetterQueueService {
@@ -21,6 +20,7 @@ public class DeadLetterQueueService {
 
     @Transactional
     public void save(DeadLetterQueueEntryDto dto) {
+        log.debug("Dead Letter를 저장합니다. DeadLetterQueueEntryDto: {}", dto);
         dlqRepository.save(DeadLetterQueueEntry.create(dto));
     }
 

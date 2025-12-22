@@ -1,12 +1,12 @@
 package com.example.mohago_nocar.transit.infrastructure.route.odsay;
 
 import com.example.mohago_nocar.global.common.domain.vo.Coordinate;
-import com.example.mohago_nocar.transit.infrastructure.route.RateLimitedApiKeyPool;
+import com.example.mohago_nocar.global.rateLimit.RateLimiter;
 import com.example.mohago_nocar.transit.infrastructure.route.odsay.response.ODsayTransitRouteResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -17,18 +17,16 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class ODsayApiRateLimitedClient {
 
-    private final RestClient restClient;
-    private final String baseUrl;
-    private final RateLimitedApiKeyPool rateLimitedApiKeyPool;
+    private final OdsayApiProperties apiProperties;
+    private final RateLimiter rateLimiter;
+    private final WebClient webClient;
 
     public ODsayApiRateLimitedClient(
-            RestClient restClient,
-            @Value("${odsay.url}") String baseUrl,
-            RateLimitedApiKeyPool rateLimitedOdsayApiKeyPool
+            OdsayApiProperties apiProperties
     ) {
-        this.restClient = restClient;
-        this.baseUrl = baseUrl;
-        this.rateLimitedApiKeyPool = rateLimitedOdsayApiKeyPool;
+        this.apiProperties = apiProperties;
+        this.rateLimiter = RateLimiter.create(apiProperties.getExecutionIntervalMills());
+        this.webClient = WebClient.builder().build();
     }
 
     /**
@@ -42,8 +40,8 @@ public class ODsayApiRateLimitedClient {
      * @return 경로 검색 결과의 CompletableFuture
      */
     public ODsayTransitRouteResponse searchTransitRoute(Coordinate origin, Coordinate destination) {
-        String encodedKey = rateLimitedApiKeyPool.acquireEncodedKey();
-        URI requestURI = buildRequestURI(origin, destination, encodedKey);
+        URI requestURI = buildRequestURI(origin, destination);
+        rateLimiter.throttle();
         return executeApiCall(requestURI);
     }
 
@@ -59,29 +57,39 @@ public class ODsayApiRateLimitedClient {
      */
     public CompletableFuture<ODsayTransitRouteResponse> searchTransitRouteAsync(
             Coordinate origin, Coordinate destination) {
-        String encodedKey = rateLimitedApiKeyPool.acquireEncodedKey();
-        URI requestURI = buildRequestURI(origin, destination, encodedKey);
-        return CompletableFuture.supplyAsync(() -> executeApiCall(requestURI));
+        URI requestURI = buildRequestURI(origin, destination);
+        rateLimiter.throttle();
+        return executeApiCallAsync(requestURI);
+    }
+
+    private URI buildRequestURI(Coordinate origin, Coordinate destination) {
+        UriComponentsBuilder uriComponentsBuilder =
+                UriComponentsBuilder.fromUriString(apiProperties.getRequestUrl())
+                        .queryParam("SX", origin.getLongitude())
+                        .queryParam("SY", origin.getLatitude())
+                        .queryParam("EX", destination.getLongitude())
+                        .queryParam("EY", destination.getLatitude());
+
+        return uriComponentsBuilder
+                .queryParam("apiKey", apiProperties.getEncodedKey())
+                .build(true)
+                .toUri();
     }
 
     private ODsayTransitRouteResponse executeApiCall(URI requestURI) {
-        return restClient.get()
+        return webClient.get()
                 .uri(requestURI)
                 .retrieve()
-                .body(ODsayTransitRouteResponse.class);
+                .bodyToMono(ODsayTransitRouteResponse.class)
+                .block();
     }
 
-    private URI buildRequestURI(Coordinate origin, Coordinate destination, String encodedKey) {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(baseUrl)
-                .queryParam("SX", origin.getLongitude())
-                .queryParam("SY", origin.getLatitude())
-                .queryParam("EX", destination.getLongitude())
-                .queryParam("EY", destination.getLatitude());
-
-        return uriComponentsBuilder
-                .queryParam("apiKey", encodedKey)
-                .build(true)
-                .toUri();
+    private CompletableFuture<ODsayTransitRouteResponse> executeApiCallAsync(URI requestURI) {
+        return webClient.get()
+                .uri(requestURI)
+                .retrieve()
+                .bodyToMono(ODsayTransitRouteResponse.class)
+                .toFuture();
     }
 
 }

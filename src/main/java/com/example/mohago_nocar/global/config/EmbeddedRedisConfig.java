@@ -11,7 +11,7 @@ import redis.embedded.RedisServer;
 @Profile("test")
 public class EmbeddedRedisConfig {
 
-    @Value("${spring.data.redis.port}")
+/*    @Value("${spring.data.redis.port")
     private int port;
 
     private RedisServer redisServer;
@@ -30,6 +30,6 @@ public class EmbeddedRedisConfig {
         if (redisServer != null) {
             redisServer.stop();
         }
-    }
+    }*/
 
 }

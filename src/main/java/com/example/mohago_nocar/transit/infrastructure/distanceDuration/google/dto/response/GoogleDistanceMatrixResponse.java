@@ -15,7 +15,8 @@ public record GoogleDistanceMatrixResponse(
 
     public record Element(
             Distance distance,
-            Duration duration
+            Duration duration,
+            DistanceMatrixElementStatus status
     ){}
 
     public record Distance(
