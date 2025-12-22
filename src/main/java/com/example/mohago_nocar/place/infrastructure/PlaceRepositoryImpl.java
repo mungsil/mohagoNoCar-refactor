@@ -21,15 +21,16 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     private static final String KEY_PREFIX = "festival:places:";
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> stringRedisTemplate;
     private final ObjectMapperUtil objectMapperUtil;
 
+    // 특정 아이디를 가지는 장소만 조회하도록 바꾸면되자나요. 근데 뭐가 더 효율적일지는 모르겠네.
     @Override
     public List<Place> findByIds(Long festivalId, List<String> placeIds) {
         List<Place> places = getFestivalAroundPlaces(festivalId);
 
         return places.stream()
-                .filter(place -> placeIds.contains(place.getId()))
+                .filter(place -> placeIds.contains(place.getKakaoId()))
                 .toList();
     }
 
@@ -54,7 +55,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     private void saveToCache(String key, List<Place> places) {
         String placesJson = objectMapperUtil.writeValue(places);
-        redisTemplate.opsForValue().set(key, placesJson, 2, TimeUnit.HOURS);
+        stringRedisTemplate.opsForValue().set(key, placesJson, 2, TimeUnit.HOURS);
     }
 
     private List<Place> readFromSavedCache(String key) {
@@ -63,7 +64,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     private String readCache(String redisKey) {
-        return redisTemplate.opsForValue().get(redisKey);
+        return stringRedisTemplate.opsForValue().get(redisKey);
     }
 
     private String generateCacheKey(Long festivalId) {

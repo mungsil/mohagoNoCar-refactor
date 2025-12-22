@@ -1,5 +1,6 @@
 package com.example.mohago_nocar.transit.infrastructure.error.code;
 
+import com.example.mohago_nocar.global.common.exception.GlobalStatus;
 import com.example.mohago_nocar.global.common.exception.InternalServerException;
 import com.example.mohago_nocar.global.common.exception.Status;
 import lombok.AllArgsConstructor;
@@ -61,6 +62,10 @@ public enum OdsayErrorCode implements Status {
 
     public boolean isTooManyRequests() {
         return this == TOO_MANY_REQUESTS;
+    }
+
+    public boolean isUnExpectedError() {
+        return this == REQUIRED_INPUT_FORMAT_ERROR || this == REQUIRED_INPUT_MISSING || this == COMPONENT_ERROR;
     }
 
 }

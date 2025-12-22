@@ -11,11 +11,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -30,11 +31,29 @@ class GoogleDistanceMatrixApiAdapterTest {
     @SpyBean
     private GoogleApiClient googleApiClient;
 
+    @Test
+    @DisplayName("출발지와 도착지의 경위도가 동일해도 정상적으로 응답한다.")
+    void shouldReturnSuccessResponseWhenSameCoordinateInputs(){
+        //given
+        Coordinate origin = createFixedCoordinate();
+        List<Coordinate> destinations = IntStream.range(0, 3)
+                .mapToObj(i -> createFixedCoordinate())
+                .toList();
+
+        //when & then
+        List<RouteMetrics> routeMetrics = googleDistanceMatrixApiAdapter.getDistanceAndDuration(origin, destinations);
+        System.out.println(routeMetrics);
+    }
+
+    private Coordinate createFixedCoordinate() {
+        return Coordinate.from(126.872939584803, 37.3700357495453);
+    }
+
     @DisplayName("유효하지 않은 API 응답임이 확인되면 예외를 throw 한다.")
     @Test
     public void getDistanceAndDuration_throwException_if_invalid() {
         //given
-        Coordinate origin = Coordinate.from(126.872939584803, 37.3700357495453);
+        Coordinate origin = createFixedCoordinate();
         List<Coordinate> destinations = createDestinations();
 
         when(googleApiClient.getDistanceMatrix(origin, destinations))
@@ -50,7 +69,7 @@ class GoogleDistanceMatrixApiAdapterTest {
     @Test
     public void getDistanceAndDuration_catchException_if_null() {
         //given
-        Coordinate origin = Coordinate.from(126.872939584803, 37.3700357495453);
+        Coordinate origin = createFixedCoordinate();
         List<Coordinate> destinations = createDestinations();
 
         when(googleApiClient.getDistanceMatrix(origin, destinations))
@@ -67,7 +86,7 @@ class GoogleDistanceMatrixApiAdapterTest {
     @Test
     public void getDistanceAndDuration(){
         //given
-        Coordinate origin = Coordinate.from(126.872939584803, 37.3700357495453);
+        Coordinate origin = createFixedCoordinate();
         List<Coordinate> destinations = createDestinations();
 
         //when

@@ -1,12 +1,16 @@
 package com.example.mohago_nocar.transit.infrastructure.error.exception;
 
-import com.example.mohago_nocar.global.common.exception.CustomException;
 import com.example.mohago_nocar.global.common.exception.Status;
+import com.example.mohago_nocar.transit.infrastructure.error.code.OdsayErrorCode;
+import lombok.Getter;
 
-public class ODsayRouteException extends CustomException {
+@Getter
+public class ODsayRouteException extends RuntimeException  {
 
-    public ODsayRouteException(Status status) {
-        super(status);
+    private final OdsayErrorCode errorCode;
+
+    public ODsayRouteException(OdsayErrorCode errorCode) {
+        this.errorCode = errorCode;
     }
 
 }

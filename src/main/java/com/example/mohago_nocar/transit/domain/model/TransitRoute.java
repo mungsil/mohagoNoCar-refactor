@@ -1,33 +1,56 @@
 package com.example.mohago_nocar.transit.domain.model;
 
 import com.example.mohago_nocar.plan.domain.model.Location;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import com.example.mohago_nocar.plan.domain.model.TravelCourseInPlan;
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@NoArgsConstructor
 @Getter
 @ToString
 public class TransitRoute {
 
-    private final int totalTime;
-    private final double totalDistance;
-    private final List<SubPath> subPaths;
-    private final Location origin;
-    private final Location destination;
+    private int totalTime;
 
-    public static TransitRoute from(Location origin, Location destination, int totalTime, double totalDistance, List<SubPath> subPaths) {
-        return TransitRoute.builder()
+    private double totalDistance;
+
+    private List<SubPath> subPaths;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "name", column = @Column(name = "start_name")),
+            @AttributeOverride(name = "coordinate.latitude", column = @Column(name = "start_latitude")),
+            @AttributeOverride(name = "coordinate.longitude", column = @Column(name = "start_longitude"))
+    })
+    private Location origin;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "name", column = @Column(name = "end_name")),
+            @AttributeOverride(name = "coordinate.latitude", column = @Column(name = "end_latitude")),
+            @AttributeOverride(name = "coordinate.longitude", column = @Column(name = "end_longitude"))
+    })
+    private Location destination;
+
+    public static TransitRoute from(Location origin, Location destination,
+                                    int totalTime, double totalDistance, List<SubPath> subPaths) {
+        TransitRoute route = TransitRoute.builder()
                 .origin(origin)
                 .destination(destination)
                 .totalTime(totalTime)
                 .totalDistance(totalDistance)
                 .subPaths(subPaths)
                 .build();
+
+        return route;
     }
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private TransitRoute(Location origin, Location destination, int totalTime, double totalDistance, List<SubPath> subPaths) {
         this.origin = origin;
         this.destination = destination;

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -18,15 +19,14 @@ public class KakaoApiClient {
 
     private final String baseUrl;
     private final String apiKey;
-    private final RestClient restClient;
+    private final WebClient webClient;
 
     public KakaoApiClient(
             @Value("${kakao.local.category}") String baseUrl,
-            @Value("${kakao.api-key}") String apiKey,
-            RestClient restClient) {
+            @Value("${kakao.api-key}") String apiKey) {
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
-        this.restClient = restClient;
+        this.webClient = WebClient.builder().build();
     }
 
     public KakaoPlacesResponse searchAttractionPlaces(Coordinate centerCoordinate, int radius, int size) {
@@ -39,12 +39,12 @@ public class KakaoApiClient {
                 .build(true)
                 .toUri();
 
-        return restClient.get()
+        return webClient.get()
                 .uri(uri)
                 .header("Authorization", AUTHORIZATION_PREFIX + apiKey)
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() { }
-                );
+                .bodyToMono(KakaoPlacesResponse.class)
+                .block();
     }
 
 }

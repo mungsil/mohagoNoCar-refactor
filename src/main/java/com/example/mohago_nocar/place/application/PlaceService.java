@@ -38,6 +38,14 @@ public class PlaceService implements PlaceUseCase {
         return PlaceConverter.convertToNearPlaceResponseDtos(festivalId, places);
     }
 
+    // 아래 메서드 결과는 0 or all이어야함. 캐싱은 festival 주변 장소 단위거든요.
+    // todo 이를 반영하는 객체 만들기
+    @Override
+    public List<Place> getFestivalNearPlacesById(Long festivalId, List<String> placeIds) {
+        return placeRepository.findByIds(festivalId, placeIds);
+    }
+
+    @Override
     public List<Place> cachePlaces(Long festivalId, Coordinate centerCoordinate) {
         KakaoPlacesResponse placesFromExternalApi = searchPlacesAround(centerCoordinate);
         List<Place> places = PlaceConverter.convertToPlaces(placesFromExternalApi);

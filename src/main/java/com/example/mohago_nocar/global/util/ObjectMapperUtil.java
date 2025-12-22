@@ -21,6 +21,14 @@ public class ObjectMapperUtil {
         }
     }
 
+    public <T> T readValue(String value, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(value, clazz);
+        } catch (JsonProcessingException e) {
+            throw new InternalServerException(e.getMessage());
+        }
+    }
+
     public String writeValue(Object value) {
         try {
             return objectMapper.writeValueAsString(value);
