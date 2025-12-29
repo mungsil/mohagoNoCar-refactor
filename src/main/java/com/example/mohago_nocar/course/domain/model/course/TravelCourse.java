@@ -26,25 +26,15 @@ public class TravelCourse extends BaseEntity {
     @Column(nullable = false)
     private UUID anonymousUserId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TravelCourseStatus courseStatus;
-
-    public static TravelCourse create(AnonymousUser user, TravelCourseStatus courseStatus) {
+    public static TravelCourse create(AnonymousUser user) {
         return TravelCourse.builder()
                 .anonymousUserId(user.getId())
-                .courseStatus(courseStatus)
                 .build();
     }
 
     @Builder
-    private TravelCourse(UUID anonymousUserId, TravelCourseStatus courseStatus) {
+    private TravelCourse(UUID anonymousUserId) {
         this.anonymousUserId = anonymousUserId;
-        this.courseStatus = courseStatus;
-    }
-
-    public void updateStatus(TravelCourseStatus courseStatus) {
-        this.courseStatus  = courseStatus;
     }
 
 }

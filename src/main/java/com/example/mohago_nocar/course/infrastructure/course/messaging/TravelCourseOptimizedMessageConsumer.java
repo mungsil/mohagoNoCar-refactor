@@ -76,12 +76,6 @@ public class TravelCourseOptimizedMessageConsumer
             return;
         }
 
-        if (eventHandler.hasHandleHistory(event.getTravelCourseId())) {
-            log.info("메시지 중복 처리 시도가 발생했습니다. 메시지 처리를 중단합니다.");
-            ackAndDel(message);
-            return;
-        }
-
         try {
             eventHandler.handleEvent(event);
         } catch (Exception ex) {

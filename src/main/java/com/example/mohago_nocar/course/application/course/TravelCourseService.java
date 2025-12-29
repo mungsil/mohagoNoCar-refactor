@@ -6,7 +6,6 @@ import com.example.mohago_nocar.course.application.route.RouteFinder;
 import com.example.mohago_nocar.course.application.route.RouteStepService;
 import com.example.mohago_nocar.course.application.spot.TravelSpotService;
 import com.example.mohago_nocar.course.domain.event.ThrottlingCompletedEvent;
-import com.example.mohago_nocar.course.domain.model.course.TravelCourseStatus;
 import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
 import com.example.mohago_nocar.course.domain.model.routeStep.RouteStep;
 import com.example.mohago_nocar.course.domain.model.travelSpot.TravelSpot;
@@ -47,7 +46,7 @@ public class TravelCourseService implements TravelCourseUseCase {
     @Transactional
     public CreateOptimizedTravelCourseAcceptedResponseDto createOptimizedTravelCourse(CreateTravelCourseRequestDto request) {
         AnonymousUser user = userUseCase.getOrCreate(request.fcmToken());
-        TravelCourse course = TravelCourse.create(user, TravelCourseStatus.PENDING);
+        TravelCourse course = TravelCourse.create(user);
         travelCourseRepository.save(course);
 
         generateSpotsWithOptimizedOrder(request, course);
@@ -67,16 +66,13 @@ public class TravelCourseService implements TravelCourseUseCase {
     }
 
     @Override
-    @Transactional
-    public void generateTransitRoute(Long travelCourseId) {
+    public List<RouteStep> fetchTravelCourseRoutes(Long travelCourseId) {
         List<CompletableFuture<RouteStep>> routeFutures = findRoutesInTravelCourse(travelCourseId);
         eventPublisher.publishEvent(ThrottlingCompletedEvent.of(travelCourseId));
-        List<RouteStep> routeSteps = CompletableFuture.allOf(routeFutures.toArray(new CompletableFuture[0]))
+        return CompletableFuture.allOf(routeFutures.toArray(new CompletableFuture[0]))
                 .orTimeout(8, TimeUnit.SECONDS)
                 .thenApply(completed -> routeFutures.stream().map(CompletableFuture::join).toList())
                 .join();
-
-        routeStepService.saveAll(routeSteps);
     }
 
     private List<CompletableFuture<RouteStep>> findRoutesInTravelCourse(Long travelCourseId) {
@@ -111,9 +107,10 @@ public class TravelCourseService implements TravelCourseUseCase {
             throw new CustomException(GlobalStatus.FORBIDDEN);
         }
 
-        if (course.getCourseStatus() != TravelCourseStatus.SUCCEEDED) {
-            throw new CustomException(CourseErrorCode.TRAVEL_COURSE_OPTIMIZATION_INCOMPLETE);
-        }
+        // todo ProcessCourse 조회
+//        if (course.getCourseStatus() != TravelCourseStatus.SUCCEEDED) {
+//            throw new CustomException(CourseErrorCode.TRAVEL_COURSE_OPTIMIZATION_INCOMPLETE);
+//        }
 
         List<TravelSpot> travelSpots = travelSpotService.getByCourseId(course.getId());
         Collections.sort(travelSpots);
@@ -133,17 +130,6 @@ public class TravelCourseService implements TravelCourseUseCase {
     @Override
     public Optional<TravelCourse> findById(Long travelCourseId) {
         return travelCourseRepository.findById(travelCourseId);
-    }
-
-    @Override
-    @Transactional
-    public void updateUncompletedCourseStatus(Long travelCourseId, TravelCourseStatus courseStatus) {
-        TravelCourse course = findById(travelCourseId).orElseThrow();
-        if (course.getCourseStatus().isComplete()) {
-            throw new RuntimeException("이미 처리 완료된 여행 코스입니다.  " + course.toString());
-        }
-
-        course.updateStatus(courseStatus);
     }
 
 }
