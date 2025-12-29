@@ -26,8 +26,6 @@ public interface TravelCourseUseCase {
 
     List<? extends RouteStepDto> getOptimizedTravelCourseRoutes(Long courseId, UUID ownerUserId);
 
-    List<TravelCourse> getOutdatedCourseNeedingNotification(int cutOffTimeInMin, Boolean notificationSent);
-
     Optional<TravelCourse> findById(Long travelCourseId);
 
     void updateUncompletedCourseStatus(Long travelCourseId, TravelCourseStatus courseStatus);
