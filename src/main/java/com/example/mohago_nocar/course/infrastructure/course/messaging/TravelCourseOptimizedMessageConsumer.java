@@ -1,14 +1,13 @@
 package com.example.mohago_nocar.course.infrastructure.course.messaging;
 
-import com.example.mohago_nocar.course.application.course.TravelCourseCompletionNotifier;
-import com.example.mohago_nocar.course.application.course.TravelCourseOptimizedEventHandler;
+import com.example.mohago_nocar.course.application.course.TravelCourseEventHandler;
 import com.example.mohago_nocar.course.domain.event.ThrottlingCompletedEvent;
 import com.example.mohago_nocar.course.domain.event.TravelCourseOptimizedEvent;
+import com.example.mohago_nocar.course.domain.service.TravelCourseUseCase;
 import com.example.mohago_nocar.global.messaging.DeadLetterQueueEntryDto;
 import com.example.mohago_nocar.global.messaging.DeadLetterQueueService;
 import com.example.mohago_nocar.global.util.RedisStreamHelper;
 import com.example.mohago_nocar.global.common.RetryPolicy;
-import com.example.mohago_nocar.global.notification.application.user.UserNotificationService;
 import com.example.mohago_nocar.global.util.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,10 +20,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.stream.StreamListener;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Slf4j
 @Getter
@@ -39,10 +35,9 @@ public class TravelCourseOptimizedMessageConsumer
     private final RedisStreamHelper redisStreamHelper;
     private final DeadLetterQueueService dlqService;
     private final ObjectMapper objectMapper;
-    private final UserNotificationService userNotificationService;
     private final RetryPolicy retryPolicy;
-    private final TravelCourseOptimizedEventHandler eventHandler;
-    private final TravelCourseCompletionNotifier travelCourseNotifier;
+    private final TravelCourseEventHandler eventHandler;
+    private final TravelCourseUseCase travelCourseUseCase;
 
     private ExecutorService executorService;
     private Semaphore semaphore;
@@ -81,10 +76,14 @@ public class TravelCourseOptimizedMessageConsumer
             return;
         }
 
+        if (eventHandler.hasHandleHistory(event.getTravelCourseId())) {
+            log.info("메시지 중복 처리 시도가 발생했습니다. 메시지 처리를 중단합니다.");
+            ackAndDel(message);
+            return;
+        }
+
         try {
             eventHandler.handleEvent(event);
-            travelCourseNotifier.sendNotificationOnce(
-                    event.getTravelCourseId(), Result.SUCCESS, exception -> saveToDeadLetterQueue(message, exception));
         } catch (Exception ex) {
             handleException(event, message, ex);
         } finally {
@@ -93,15 +92,13 @@ public class TravelCourseOptimizedMessageConsumer
     }
 
     private void handleException(TravelCourseOptimizedEvent event, ObjectRecord<String, String> message, Exception e) {
+        log.error(e.getMessage(), e);
         if (retryPolicy.isRetryable(e)) {
             saveToDeadLetterQueue(message, e);
-            eventHandler.markAsWaitingReprocessing(event.getTravelCourseId());
             return;
         }
 
-        eventHandler.markAsFailed(event.getTravelCourseId());
-        travelCourseNotifier.sendNotificationOnce(
-                event.getTravelCourseId(), Result.FAILURE, exception -> saveToDeadLetterQueue(message, exception));
+        eventHandler.processFailEvent(event);
     }
 
     private void saveToDeadLetterQueue(ObjectRecord<String, String> message, Exception ex) {

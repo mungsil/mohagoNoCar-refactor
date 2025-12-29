@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class RouteStepService {
 
     private final RouteStepRepository routeStepRepository;
-    private final RouteFinder routeStepFinder;
 
     @Transactional
     public List<RouteStep> saveAll(List<RouteStep> routeSteps) {

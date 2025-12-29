@@ -20,7 +20,10 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@Table(name = "route_step")
+@Table(name = "route_step",
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"originSpotId", "destinationSpotId"})
+)
 @ToString
 @NoArgsConstructor(access = PROTECTED)
 public class RouteStep extends BaseEntity {
@@ -35,7 +38,7 @@ public class RouteStep extends BaseEntity {
 
     @Type(JsonBinaryType.class)
     @Column(columnDefinition = "jsonb")
-    private List<SubPath> detailPaths; // subpath는 transit 건데, 그럼 dto도 transit에 있어야하는게 적절하지 않나
+    private List<SubPath> detailPaths;
 
     @NotNull
     private Double distanceKm;

@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 public class DeadLetterQueueEntry extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("DLQ 엔트리 ID")
-    private Long id;
+    @Column(nullable = false, length = 100)
+    @Comment("Stream entry ID")
+    private String entryId;
 
     @Column(nullable = false, length = 100)
     @Comment("Redis Stream 키")
@@ -28,10 +28,6 @@ public class DeadLetterQueueEntry extends BaseEntity {
     @Column(nullable = false, length = 100)
     @Comment("컨슈머 그룹 이름")
     private String consumerGroup;
-
-    @Column(nullable = false, length = 100)
-    @Comment("Stream entry ID")
-    private String entryId;
 
     @Column(columnDefinition = "TEXT")
     @Comment("메시지 페이로드 (JSON)")
