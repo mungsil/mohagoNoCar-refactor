@@ -1,12 +1,11 @@
 package com.example.mohago_nocar.course.infrastructure.course.messaging;
 
-import com.example.mohago_nocar.course.application.course.TravelCourseCompletionNotifier;
-import com.example.mohago_nocar.course.application.course.TravelCourseOptimizedEventHandler;
+import com.example.mohago_nocar.course.application.course.TravelCourseEventHandler;
+import com.example.mohago_nocar.course.domain.service.TravelCourseUseCase;
 import com.example.mohago_nocar.global.messaging.DeadLetterQueueService;
 import com.example.mohago_nocar.global.util.RedisStreamHelper;
 import com.example.mohago_nocar.global.common.RetryPolicy;
 import com.example.mohago_nocar.global.notification.application.developer.DeveloperNotificationUseCase;
-import com.example.mohago_nocar.global.notification.application.user.UserNotificationService;
 import com.example.mohago_nocar.global.util.ObjectMapperUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +54,7 @@ public class TravelCourseOptimizedStreamConfig {
     }
 
     @Bean
-    public TravelCourseOptimizedMessageProducer travelSpotOrderEventProducer(
+    public TravelCourseOptimizedMessageProducer travelCourseOptimizedEventPublisher(
             StringRedisTemplate stringRedisTemplate,
             ObjectMapperUtil objectMapperUtil
     ) {
@@ -68,10 +67,10 @@ public class TravelCourseOptimizedStreamConfig {
             RedisStreamHelper redisStreamHelper,
             ObjectMapper objectMapper,
             DeadLetterQueueService deadLetterQueueService,
-            UserNotificationService userNotificationService,
             RetryPolicy travelSpotOptimizedStreamMsgRetryPolicy,
-            TravelCourseOptimizedEventHandler travelCourseOptimizedEventHandler,
-            TravelCourseCompletionNotifier travelCourseNotifier) {
+            TravelCourseEventHandler travelCourseEventHandler,
+            TravelCourseUseCase travelCourseUseCase
+            ) {
         return new TravelCourseOptimizedMessageConsumer(
                 streamKey,
                 CONSUMER_GROUP,
@@ -79,10 +78,9 @@ public class TravelCourseOptimizedStreamConfig {
                 redisStreamHelper,
                 deadLetterQueueService,
                 objectMapper,
-                userNotificationService,
                 travelSpotOptimizedStreamMsgRetryPolicy,
-                travelCourseOptimizedEventHandler,
-                travelCourseNotifier
+                travelCourseEventHandler,
+                travelCourseUseCase
                 );
     }
 

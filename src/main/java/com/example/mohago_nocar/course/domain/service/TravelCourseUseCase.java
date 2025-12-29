@@ -1,17 +1,14 @@
 package com.example.mohago_nocar.course.domain.service;
 
 import com.example.mohago_nocar.course.application.dto.RouteStepDto;
-import com.example.mohago_nocar.course.domain.model.course.CourseStatus;
+import com.example.mohago_nocar.course.domain.model.course.TravelCourseStatus;
 import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
-import com.example.mohago_nocar.course.domain.event.TravelCourseOptimizedEvent;
-import com.example.mohago_nocar.course.domain.model.routeStep.RouteStep;
 import com.example.mohago_nocar.course.presentation.dto.CreateTravelCourseRequestDto;
 import com.example.mohago_nocar.course.presentation.dto.CreateOptimizedTravelCourseAcceptedResponseDto;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public interface TravelCourseUseCase {
 
@@ -33,8 +30,6 @@ public interface TravelCourseUseCase {
 
     Optional<TravelCourse> findById(Long travelCourseId);
 
-    void markNotificationSent(Long travelCourseId);
-
-    void updateCourseStatus(Long travelCourseId, CourseStatus courseStatus);
+    void updateUncompletedCourseStatus(Long travelCourseId, TravelCourseStatus courseStatus);
 
 }

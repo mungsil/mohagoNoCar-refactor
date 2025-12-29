@@ -1,7 +1,6 @@
 package com.example.mohago_nocar.transit.domain.model;
 
 import com.example.mohago_nocar.plan.domain.model.Location;
-import com.example.mohago_nocar.plan.domain.model.TravelCourseInPlan;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,6 +1,7 @@
 package com.example.mohago_nocar.course.infrastructure.course.repository;
 
 import com.example.mohago_nocar.course.application.dto.GetRequesterInfoDto;
+import com.example.mohago_nocar.course.domain.model.course.TravelCourseStatus;
 import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
 import com.example.mohago_nocar.course.domain.repository.TravelCourseRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +25,6 @@ public class TravelCourseRepositoryImpl implements TravelCourseRepository {
     @Override
     public Optional<TravelCourse> findById(Long travelCourseId) {
         return travelCourseJpaRepository.findById(travelCourseId);
-    }
-
-    @Override
-    public Optional<GetRequesterInfoDto> getRequestrInfo(Long travelCourseId) {
-        return travelCourseJpaRepository.findRequesterInfoByTravelCourseId(travelCourseId);
-    }
-
-    @Override
-    public List<TravelCourse> findOutdatedCoursesNeedingNotification(LocalDateTime thresholdTime, Boolean notificationSent) {
-        return travelCourseJpaRepository.findOutdatedCoursesNeedingNotification(thresholdTime, Boolean.FALSE);
     }
 
 }

@@ -1,6 +1,9 @@
 package com.example.mohago_nocar.course.domain.event;
 
+import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.UUID;
@@ -10,6 +13,8 @@ import java.util.UUID;
  */
 @Getter
 @ToString
+@Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TravelCourseOptimizedEvent {
 
     private Long travelCourseId;

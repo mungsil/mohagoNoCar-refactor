@@ -6,21 +6,16 @@ import com.example.mohago_nocar.course.application.route.RouteFinder;
 import com.example.mohago_nocar.course.application.route.RouteStepService;
 import com.example.mohago_nocar.course.application.spot.TravelSpotService;
 import com.example.mohago_nocar.course.domain.event.ThrottlingCompletedEvent;
-import com.example.mohago_nocar.course.domain.model.course.CourseStatus;
+import com.example.mohago_nocar.course.domain.model.course.TravelCourseStatus;
 import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
 import com.example.mohago_nocar.course.domain.model.routeStep.RouteStep;
 import com.example.mohago_nocar.course.domain.model.travelSpot.TravelSpot;
 import com.example.mohago_nocar.course.domain.repository.TravelCourseRepository;
 import com.example.mohago_nocar.course.domain.service.TravelCourseUseCase;
-import com.example.mohago_nocar.course.domain.model.course.TravelCourseCompletionMessage;
-import com.example.mohago_nocar.course.domain.event.TravelCourseOptimizedEvent;
-import com.example.mohago_nocar.course.infrastructure.course.messaging.TravelCourseOptimizedMessageConsumer;
 import com.example.mohago_nocar.course.presentation.dto.CreateTravelCourseRequestDto;
 import com.example.mohago_nocar.course.presentation.dto.CreateOptimizedTravelCourseAcceptedResponseDto;
 import com.example.mohago_nocar.global.common.exception.CustomException;
 import com.example.mohago_nocar.global.common.exception.GlobalStatus;
-import com.example.mohago_nocar.global.notification.application.user.UserNotificationDto;
-import com.example.mohago_nocar.global.notification.application.user.UserNotificationService;
 import com.example.mohago_nocar.user.domain.AnonymousUser;
 import com.example.mohago_nocar.user.domain.UserUseCase;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -45,6 +37,7 @@ public class TravelCourseService implements TravelCourseUseCase {
 
     private final UserUseCase userUseCase;
     private final TravelCourseRepository travelCourseRepository;
+    private final TravelCourseEventOutboxService travelCourseEventOutboxService;
     private final TravelSpotService travelSpotService;
     private final RouteStepService routeStepService;
     private final ApplicationEventPublisher eventPublisher;
@@ -54,15 +47,12 @@ public class TravelCourseService implements TravelCourseUseCase {
     @Transactional
     public CreateOptimizedTravelCourseAcceptedResponseDto createOptimizedTravelCourse(CreateTravelCourseRequestDto request) {
         AnonymousUser user = userUseCase.getOrCreate(request.fcmToken());
-        TravelCourse course = TravelCourse.create(user, CourseStatus.ENQUEUED);
+        TravelCourse course = TravelCourse.create(user, TravelCourseStatus.PENDING);
         travelCourseRepository.save(course);
 
         generateSpotsWithOptimizedOrder(request, course);
 
-        eventPublisher.publishEvent(
-                TravelCourseOptimizedEvent.of(course.getId(), course.getAnonymousUserId())
-        );
-
+        travelCourseEventOutboxService.generate(course);
         return CreateOptimizedTravelCourseAcceptedResponseDto.of(course.getId(), user.getId());
     }
 
@@ -121,7 +111,7 @@ public class TravelCourseService implements TravelCourseUseCase {
             throw new CustomException(GlobalStatus.FORBIDDEN);
         }
 
-        if (course.getCourseStatus() != CourseStatus.SUCCEEDED) {
+        if (course.getCourseStatus() != TravelCourseStatus.SUCCEEDED) {
             throw new CustomException(CourseErrorCode.TRAVEL_COURSE_OPTIMIZATION_INCOMPLETE);
         }
 
@@ -141,27 +131,18 @@ public class TravelCourseService implements TravelCourseUseCase {
     }
 
     @Override
-    public List<TravelCourse> getOutdatedCourseNeedingNotification(int cutOffTimeInMin, Boolean notificationSent) {
-        LocalDateTime thresholdTime = LocalDateTime.now().minusMinutes(cutOffTimeInMin);
-        return travelCourseRepository.findOutdatedCoursesNeedingNotification(thresholdTime, notificationSent);
-    }
-
-    @Override
     public Optional<TravelCourse> findById(Long travelCourseId) {
         return travelCourseRepository.findById(travelCourseId);
     }
 
     @Override
     @Transactional
-    public void markNotificationSent(Long travelCourseId) {
+    public void updateUncompletedCourseStatus(Long travelCourseId, TravelCourseStatus courseStatus) {
         TravelCourse course = findById(travelCourseId).orElseThrow();
-        course.markNotificationSent();
-    }
+        if (course.getCourseStatus().isComplete()) {
+            throw new RuntimeException("이미 처리 완료된 여행 코스입니다.  " + course.toString());
+        }
 
-    @Override
-    @Transactional
-    public void updateCourseStatus(Long travelCourseId, CourseStatus courseStatus) {
-        TravelCourse course = findById(travelCourseId).orElseThrow();
         course.updateStatus(courseStatus);
     }
 
