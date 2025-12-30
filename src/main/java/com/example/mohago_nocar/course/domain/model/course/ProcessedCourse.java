@@ -10,19 +10,23 @@ import org.springframework.data.domain.Persistable;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TravelCourseOptimizedEventHandleHistory implements Persistable<Long> {
+public class ProcessedCourse implements Persistable<Long> {
 
     @Id
     @Column(unique = true)
     private Long travelCourseId;
 
-    public static TravelCourseOptimizedEventHandleHistory of(Long travelCourseId) {
-        return new TravelCourseOptimizedEventHandleHistory(travelCourseId);
+    @Column(nullable = false)
+    private Boolean result;
+
+    public static ProcessedCourse of(long travelCourseId, boolean result) {
+        return new ProcessedCourse(travelCourseId, result);
     }
 
     @Builder
-    private TravelCourseOptimizedEventHandleHistory(Long travelCourseId) {
+    private ProcessedCourse(Long travelCourseId, Boolean result) {
         this.travelCourseId = travelCourseId;
+        this.result = result;
     }
 
     @Override

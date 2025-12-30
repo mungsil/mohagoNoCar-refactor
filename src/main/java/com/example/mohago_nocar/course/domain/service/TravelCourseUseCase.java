@@ -1,8 +1,8 @@
 package com.example.mohago_nocar.course.domain.service;
 
 import com.example.mohago_nocar.course.application.dto.RouteStepDto;
-import com.example.mohago_nocar.course.domain.model.course.TravelCourseStatus;
 import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
+import com.example.mohago_nocar.course.domain.model.routeStep.RouteStep;
 import com.example.mohago_nocar.course.presentation.dto.CreateTravelCourseRequestDto;
 import com.example.mohago_nocar.course.presentation.dto.CreateOptimizedTravelCourseAcceptedResponseDto;
 
@@ -13,10 +13,10 @@ import java.util.UUID;
 public interface TravelCourseUseCase {
 
     /**
-     * 여행 코스 내 장소 간 대중교통 이동 경로를 생성합니다.
+     * 여행 코스 내 장소 간 대중교통 이동 경로를 구합니다.
      * @param travelCourseId 장소 방문 순서가 결정된 여행 코스의 아이디
      */
-    void generateTransitRoute(Long travelCourseId);
+    List<RouteStep> fetchTravelCourseRoutes(Long travelCourseId);
 
     /**
      * 여행 장소들을 방문할 순서를 결정합니다.
@@ -27,7 +27,5 @@ public interface TravelCourseUseCase {
     List<? extends RouteStepDto> getOptimizedTravelCourseRoutes(Long courseId, UUID ownerUserId);
 
     Optional<TravelCourse> findById(Long travelCourseId);
-
-    void updateUncompletedCourseStatus(Long travelCourseId, TravelCourseStatus courseStatus);
 
 }
