@@ -23,11 +23,11 @@ public class TravelCourseEventService {
 
     @Transactional
     public TravelCourseOptimizedEventLog generate(TravelCourse course) {
-        TravelCourseOptimizedEventLog courseOutbox = createCourseOutbox(course);
+        TravelCourseOptimizedEventLog courseOutbox = createOptimizedEventLog(course);
         return travelCourseOptimizedEventRepository.save(courseOutbox);
     }
 
-    private TravelCourseOptimizedEventLog createCourseOutbox(TravelCourse course) {
+    private TravelCourseOptimizedEventLog createOptimizedEventLog(TravelCourse course) {
         TravelCourseOptimizedEvent event = TravelCourseOptimizedEvent.of(course.getId(), course.getAnonymousUserId());
         return TravelCourseOptimizedEventLog.create(event);
     }
