@@ -1,6 +1,5 @@
 package com.example.mohago_nocar.course.application.course;
 
-import com.example.mohago_nocar.course.application.CourseErrorCode;
 import com.example.mohago_nocar.course.application.dto.RouteStepDto;
 import com.example.mohago_nocar.course.application.route.RouteFinder;
 import com.example.mohago_nocar.course.application.route.RouteStepService;
@@ -23,7 +22,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +34,7 @@ public class TravelCourseService implements TravelCourseUseCase {
 
     private final UserUseCase userUseCase;
     private final TravelCourseRepository travelCourseRepository;
-    private final TravelCourseEventOutboxService travelCourseEventOutboxService;
+    private final TravelCourseEventService travelCourseEventService;
     private final TravelSpotService travelSpotService;
     private final RouteStepService routeStepService;
     private final ApplicationEventPublisher eventPublisher;
@@ -51,7 +49,7 @@ public class TravelCourseService implements TravelCourseUseCase {
 
         generateSpotsWithOptimizedOrder(request, course);
 
-        travelCourseEventOutboxService.generate(course);
+        travelCourseEventService.generate(course);
         return CreateOptimizedTravelCourseAcceptedResponseDto.of(course.getId(), user.getId());
     }
 

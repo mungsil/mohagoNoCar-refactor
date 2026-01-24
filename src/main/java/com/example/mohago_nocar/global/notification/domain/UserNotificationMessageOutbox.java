@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.global.notification.domain;
 
-import com.example.mohago_nocar.global.common.domain.OutboxStatus;
+import com.example.mohago_nocar.global.common.domain.EventProcessStatus;
 import com.example.mohago_nocar.global.common.domain.BaseEntity;
 import com.example.mohago_nocar.global.notification.application.user.UserNotificationDto;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
@@ -38,7 +38,7 @@ public class UserNotificationMessageOutbox extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OutboxStatus status;
+    private EventProcessStatus status;
 
     @Column(nullable = false)
     private Integer retryCount;
@@ -47,7 +47,7 @@ public class UserNotificationMessageOutbox extends BaseEntity {
     private String failReason;
 
     public static UserNotificationMessageOutbox of(
-            OutboxStatus status,
+            EventProcessStatus status,
             Integer retryCount,
             String title,
             String body,
@@ -66,7 +66,7 @@ public class UserNotificationMessageOutbox extends BaseEntity {
 
     public static UserNotificationMessageOutbox from(UserNotificationDto dto) {
         return UserNotificationMessageOutbox.of(
-                OutboxStatus.PENDING,
+                EventProcessStatus.PENDING,
                 0,
                 dto.getTitle(),
                 dto.getBody(),
@@ -77,7 +77,7 @@ public class UserNotificationMessageOutbox extends BaseEntity {
 
     @Builder
     private UserNotificationMessageOutbox(
-            OutboxStatus status,
+            EventProcessStatus status,
             Integer retryCount,
             String title,
             String body,
@@ -99,11 +99,11 @@ public class UserNotificationMessageOutbox extends BaseEntity {
     }
 
     public void markAsPublished() {
-        this.status = OutboxStatus.SENT;
+        this.status = EventProcessStatus.SENT;
     }
 
     public void markFailWithReason(Throwable throwable) {
-        this.status = OutboxStatus.FAIL;
+        this.status = EventProcessStatus.FAIL;
         this.failReason = throwable.getMessage();
     }
 

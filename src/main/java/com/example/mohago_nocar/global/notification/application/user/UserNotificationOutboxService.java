@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.global.notification.application.user;
 
-import com.example.mohago_nocar.global.common.domain.OutboxStatus;
+import com.example.mohago_nocar.global.common.domain.EventProcessStatus;
 import com.example.mohago_nocar.global.notification.NotificationMessagingException;
 import com.example.mohago_nocar.global.notification.domain.UserNotificationMessageOutbox;
 import com.example.mohago_nocar.global.notification.infrastructure.UserNotificationMessageOutboxJpaRepository;
@@ -37,7 +37,7 @@ public class UserNotificationOutboxService {
     @Transactional
     public List<UserNotificationMessageOutbox> findUnpublished(int size) {
         return outboxRepository.findByStatusInOrderByCreatedDateAsc(
-                List.of(OutboxStatus.PENDING), size);
+                List.of(EventProcessStatus.PENDING), size);
     }
 
     public void publish(UserNotificationMessageOutbox messageOutbox) {

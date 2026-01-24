@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/travel/courses")
+@RequestMapping("/api/v1/travel-courses")
 public class TravelCourseController {
 
     private final TravelCourseUseCase travelCourseUseCase;
