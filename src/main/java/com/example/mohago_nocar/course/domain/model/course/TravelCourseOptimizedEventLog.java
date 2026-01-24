@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TravelCourseOptimizedEvent extends BaseEntity {
+public class TravelCourseOptimizedEventLog extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +30,8 @@ public class TravelCourseOptimizedEvent extends BaseEntity {
     @Column(nullable = true)
     private String failReason;
 
-    public static TravelCourseOptimizedEvent create(com.example.mohago_nocar.course.domain.event.TravelCourseOptimizedEvent event) {
-        return TravelCourseOptimizedEvent.builder()
+    public static TravelCourseOptimizedEventLog create(com.example.mohago_nocar.course.domain.event.TravelCourseOptimizedEvent event) {
+        return TravelCourseOptimizedEventLog.builder()
                 .payload(event)
                 .retryCount(0)
                 .status(EventProcessStatus.PENDING)
@@ -39,7 +39,7 @@ public class TravelCourseOptimizedEvent extends BaseEntity {
     }
 
     @Builder
-    private TravelCourseOptimizedEvent(com.example.mohago_nocar.course.domain.event.TravelCourseOptimizedEvent payload, EventProcessStatus status, Integer retryCount) {
+    private TravelCourseOptimizedEventLog(com.example.mohago_nocar.course.domain.event.TravelCourseOptimizedEvent payload, EventProcessStatus status, Integer retryCount) {
         this.payload = payload;
         this.status = status;
         this.retryCount = retryCount;

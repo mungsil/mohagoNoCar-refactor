@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.course.application.course;
 
-import com.example.mohago_nocar.course.domain.model.course.TravelCourseOptimizedEvent;
+import com.example.mohago_nocar.course.domain.model.course.TravelCourseOptimizedEventLog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,8 +20,8 @@ public class TravelCourseEventOutboxHandler {
     public void handle() {
         long handleStartTime = System.nanoTime();
 
-        List<TravelCourseOptimizedEvent> unpublishedList = outboxService.findUnpublished(10);
-        for (TravelCourseOptimizedEvent unpublished : unpublishedList) {
+        List<TravelCourseOptimizedEventLog> unpublishedList = outboxService.findUnpublished(10);
+        for (TravelCourseOptimizedEventLog unpublished : unpublishedList) {
             try {
                 outboxService.publish(unpublished);
                 outboxService.markAsPublished(unpublished);
