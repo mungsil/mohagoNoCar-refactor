@@ -4,7 +4,6 @@ import com.example.mohago_nocar.course.application.dto.RouteStepDto;
 import com.example.mohago_nocar.course.application.route.RouteFinder;
 import com.example.mohago_nocar.course.application.route.RouteStepService;
 import com.example.mohago_nocar.course.application.spot.TravelSpotService;
-import com.example.mohago_nocar.course.domain.event.ThrottlingCompletedEvent;
 import com.example.mohago_nocar.course.domain.model.course.CourseOptimizedEvent;
 import com.example.mohago_nocar.course.domain.model.course.CourseOptimizedEventConsumeExecution;
 import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
@@ -114,7 +113,7 @@ public class TravelCourseService implements TravelCourseUseCase {
             throw new CustomException(GlobalStatus.FORBIDDEN);
         }
 
-        // todo ProcessCourse 조회
+        // todo course event == success 여야 함.
 //        if (course.getCourseStatus() != TravelCourseStatus.SUCCEEDED) {
 //            throw new CustomException(CourseErrorCode.TRAVEL_COURSE_OPTIMIZATION_INCOMPLETE);
 //        }
