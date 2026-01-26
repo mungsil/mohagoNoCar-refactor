@@ -30,8 +30,9 @@ public class TravelCourseEventHandler {
     private final RouteStepService routeStepService;
     private final TransactionTemplate transactionTemplate;
 
-    public void handleEvent(TravelCourseOptimizedEvent event) {
-        List<RouteStep> routeSteps = travelCourseUseCase.fetchTravelCourseRoutes(event.getTravelCourseId());
+    public void processPendingEvent(TravelCourseOptimizedEvent event) {
+        List<RouteStep> routeSteps = travelCourseUseCase.fetchTravelRoutesFromExternalApi(event.getTravelCourseId())
+                .join();
 
         transactionTemplate.executeWithoutResult(tx -> {
             if (isProcessed(event.getTravelCourseId(), true)) {

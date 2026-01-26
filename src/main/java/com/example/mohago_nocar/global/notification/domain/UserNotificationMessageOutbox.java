@@ -66,7 +66,7 @@ public class UserNotificationMessageOutbox extends BaseEntity {
 
     public static UserNotificationMessageOutbox from(UserNotificationDto dto) {
         return UserNotificationMessageOutbox.of(
-                EventProcessStatus.PENDING,
+                EventProcessStatus.CREATED,
                 0,
                 dto.getTitle(),
                 dto.getBody(),
@@ -99,11 +99,11 @@ public class UserNotificationMessageOutbox extends BaseEntity {
     }
 
     public void markAsPublished() {
-        this.status = EventProcessStatus.SENT;
+        this.status = EventProcessStatus.SUCCESS;
     }
 
     public void markFailWithReason(Throwable throwable) {
-        this.status = EventProcessStatus.FAIL;
+        this.status = EventProcessStatus.RETRYABLE_FAIL;
         this.failReason = throwable.getMessage();
     }
 

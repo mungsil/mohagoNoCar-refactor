@@ -37,7 +37,7 @@ public class UserNotificationOutboxService {
     @Transactional
     public List<UserNotificationMessageOutbox> findUnpublished(int size) {
         return outboxRepository.findByStatusInOrderByCreatedDateAsc(
-                List.of(EventProcessStatus.PENDING), size);
+                List.of(EventProcessStatus.CREATED), size);
     }
 
     public void publish(UserNotificationMessageOutbox messageOutbox) {
