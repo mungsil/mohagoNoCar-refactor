@@ -34,3 +34,19 @@
 |  <a href="https://github.com/mungsil"> <img src="https://avatars.githubusercontent.com/u/107127451?v=4" width=100px alt="_"/> </a> | <a href="https://github.com/mingmingmon"> <img src="https://avatars.githubusercontent.com/u/96719969?v=4" width=100px alt="_"/> </a>|<a href="https://github.com/areian13"> <img src="https://avatars.githubusercontent.com/u/64716815?v=4" width=100px alt="_"/> </a>|<a href="https://github.com/nahyun0423"> <img src="https://avatars.githubusercontent.com/u/68987116?v=4" width=100px alt="_"/> </a>|
 | **Server** | **Server** | **Server** | **Server** |
 </div>
+
+<div align="center">
+
+| 이름 | 역할 | 담당 기능 |
+|:---:|:---:|:---:|
+| 김송은 | Backend (팀장)| ERD 설계, API 개발, 배포 |
+| 전민주 | Backend | ERD 설계, API 개발 |
+| 노태윤 | Backend | API 개발 |
+| 김나현 | Backend | API 개발 |
+
+</div>
+
+
+
+
+
