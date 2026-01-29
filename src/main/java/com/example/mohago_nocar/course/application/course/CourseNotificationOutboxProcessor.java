@@ -22,6 +22,7 @@ public class CourseNotificationOutboxProcessor {
                 notificationService.getOldestPendingNotificationOutBoxes(pollSize, 3);
 
         // todo 비동기 처리
+        // todo 에러 핸들링 - 알림 전송 실패 시 실패 이유 기록
         for (CourseNotificationOutbox notification : notificationOutBoxes) {
             int tryCount = notificationService.incrementTryCount(notification, 1);
             log.info("Processing notification outbox: {}, try #{}", notification, tryCount);
