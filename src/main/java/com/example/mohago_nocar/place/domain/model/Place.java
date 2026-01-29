@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.EnumType.STRING;
 
-// 이거 레디스 해시예욤...
 @Getter
 @NoArgsConstructor
 public class Place {

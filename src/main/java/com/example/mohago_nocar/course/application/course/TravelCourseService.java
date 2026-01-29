@@ -1,29 +1,30 @@
 package com.example.mohago_nocar.course.application.course;
 
-import com.example.mohago_nocar.course.application.CourseErrorCode;
 import com.example.mohago_nocar.course.application.dto.RouteStepDto;
 import com.example.mohago_nocar.course.application.route.RouteFinder;
 import com.example.mohago_nocar.course.application.route.RouteStepService;
 import com.example.mohago_nocar.course.application.spot.TravelSpotService;
-import com.example.mohago_nocar.course.domain.event.ThrottlingCompletedEvent;
-import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
+import com.example.mohago_nocar.course.domain.model.course.*;
 import com.example.mohago_nocar.course.domain.model.routeStep.RouteStep;
 import com.example.mohago_nocar.course.domain.model.travelSpot.TravelSpot;
+import com.example.mohago_nocar.course.domain.repository.CourseOptimizedEventConsumeRepository;
+import com.example.mohago_nocar.course.domain.repository.CourseOptimizedEventRepository;
 import com.example.mohago_nocar.course.domain.repository.TravelCourseRepository;
 import com.example.mohago_nocar.course.domain.service.TravelCourseUseCase;
+import com.example.mohago_nocar.course.infrastructure.course.CourseNotificationOutboxRepository;
 import com.example.mohago_nocar.course.presentation.dto.CreateTravelCourseRequestDto;
 import com.example.mohago_nocar.course.presentation.dto.CreateOptimizedTravelCourseAcceptedResponseDto;
+import com.example.mohago_nocar.global.common.domain.EventProcessStatus;
 import com.example.mohago_nocar.global.common.exception.CustomException;
 import com.example.mohago_nocar.global.common.exception.GlobalStatus;
+import com.example.mohago_nocar.global.util.StackTraceExtractor;
 import com.example.mohago_nocar.user.domain.AnonymousUser;
 import com.example.mohago_nocar.user.domain.UserUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -35,24 +36,31 @@ import java.util.concurrent.TimeUnit;
 public class TravelCourseService implements TravelCourseUseCase {
 
     private final UserUseCase userUseCase;
-    private final TravelCourseRepository travelCourseRepository;
-    private final TravelCourseEventOutboxService travelCourseEventOutboxService;
+    private final TravelCourseRepository courseRepository;
     private final TravelSpotService travelSpotService;
     private final RouteStepService routeStepService;
-    private final ApplicationEventPublisher eventPublisher;
     private final RouteFinder routeFinder;
+    private final CourseOptimizedEventRepository optimizedEventRepository;
+    private final CourseOptimizedEventConsumeRepository optimizedEventConsumeRepository;
+    private final StackTraceExtractor stackTraceExtractor;
+    private final CourseNotificationOutboxRepository notificationOutboxRepository;
 
     @Override
     @Transactional
     public CreateOptimizedTravelCourseAcceptedResponseDto createOptimizedTravelCourse(CreateTravelCourseRequestDto request) {
         AnonymousUser user = userUseCase.getOrCreate(request.fcmToken());
         TravelCourse course = TravelCourse.create(user);
-        travelCourseRepository.save(course);
+        courseRepository.save(course);
 
         generateSpotsWithOptimizedOrder(request, course);
 
-        travelCourseEventOutboxService.generate(course);
+        saveOptimizedEvent(user, course);
         return CreateOptimizedTravelCourseAcceptedResponseDto.of(course.getId(), user.getId());
+    }
+
+    private void saveOptimizedEvent(AnonymousUser user, TravelCourse course) {
+        CourseOptimizedEvent event = CourseOptimizedEvent.create(user, course);
+        optimizedEventRepository.save(event);
     }
 
     private void generateSpotsWithOptimizedOrder(CreateTravelCourseRequestDto request, TravelCourse course) {
@@ -66,22 +74,17 @@ public class TravelCourseService implements TravelCourseUseCase {
     }
 
     @Override
-    public List<RouteStep> fetchTravelCourseRoutes(Long travelCourseId) {
-        List<CompletableFuture<RouteStep>> routeFutures = findRoutesInTravelCourse(travelCourseId);
-        eventPublisher.publishEvent(ThrottlingCompletedEvent.of(travelCourseId));
-        return CompletableFuture.allOf(routeFutures.toArray(new CompletableFuture[0]))
-                .orTimeout(8, TimeUnit.SECONDS)
-                .thenApply(completed -> routeFutures.stream().map(CompletableFuture::join).toList())
-                .join();
-    }
-
-    private List<CompletableFuture<RouteStep>> findRoutesInTravelCourse(Long travelCourseId) {
+    public CompletableFuture<List<RouteStep>> fetchTravelRoutesFromExternalApi(Long travelCourseId) {
         List<TravelSpot> travelSpots = travelSpotService.getByCourseId(travelCourseId);
 
         validateMinSize(travelSpots, 2);
         sortByVisitOrder(travelSpots);
 
-        return routeFinder.findRouteWithThrottling(travelSpots);
+        List<CompletableFuture<RouteStep>> routeFutures = routeFinder.findRouteWithThrottling(travelSpots);
+
+        return CompletableFuture.allOf(routeFutures.toArray(new CompletableFuture[0]))
+                .orTimeout(8, TimeUnit.SECONDS)
+                .thenApply(completed -> routeFutures.stream().map(CompletableFuture::join).toList());
     }
 
     private void sortByVisitOrder(List<TravelSpot> travelSpots) {
@@ -100,14 +103,14 @@ public class TravelCourseService implements TravelCourseUseCase {
         Objects.requireNonNull(courseId);
         Objects.requireNonNull(ownerUserId);
 
-        TravelCourse course = travelCourseRepository.findById(courseId)
+        TravelCourse course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CustomException(GlobalStatus.ENTITY_NOT_FOUND));
 
         if (!course.getAnonymousUserId().equals(ownerUserId)) {
             throw new CustomException(GlobalStatus.FORBIDDEN);
         }
 
-        // todo ProcessCourse 조회
+        // todo course event == success 여야 함.
 //        if (course.getCourseStatus() != TravelCourseStatus.SUCCEEDED) {
 //            throw new CustomException(CourseErrorCode.TRAVEL_COURSE_OPTIMIZATION_INCOMPLETE);
 //        }
@@ -129,7 +132,42 @@ public class TravelCourseService implements TravelCourseUseCase {
 
     @Override
     public Optional<TravelCourse> findById(Long travelCourseId) {
-        return travelCourseRepository.findById(travelCourseId);
+        return courseRepository.findById(travelCourseId);
+    }
+
+    @Override
+    public List<CourseOptimizedEvent> getOldestOptimizedCourseEvents(int size, List<EventProcessStatus> eventProcessStatuses) {
+        return optimizedEventRepository.findTopNByStatusInOrderByCreatedDateAsc(size, eventProcessStatuses);
+    }
+
+    @Transactional
+    @Override
+    public void completeOptimizedEventConsumeWithFailure(CourseOptimizedEvent event, Exception exception) {
+        CourseOptimizedEventConsume consumed = event.consumeFailure(exception, stackTraceExtractor);
+        optimizedEventRepository.save(event);
+        optimizedEventConsumeRepository.save(consumed);
+        notificationOutboxRepository.save(CourseNotificationOutbox.create(event.getTravelCourseId()));
+    }
+
+    @Transactional
+    @Override
+    public void completeOptimizedEventConsumeWithSuccess(CourseOptimizedEvent event) {
+        CourseOptimizedEventConsume consumed = event.consumeSuccess();
+        optimizedEventRepository.save(event);
+        optimizedEventConsumeRepository.save(consumed);
+        notificationOutboxRepository.save(CourseNotificationOutbox.create(event.getTravelCourseId()));
+    }
+
+    @Override
+    public AnonymousUser getRequestUserOrThrow(Long travelCourseId) {
+        return courseRepository.findUserByCourseId(travelCourseId)
+                .orElseThrow(() -> new CustomException(GlobalStatus.ENTITY_NOT_FOUND));
+    }
+
+    @Override
+    public CourseOptimizedEvent getOptimizedEventOrThrow(Long travelCourseId) {
+        return courseRepository.findOptimizedEventByCourseId(travelCourseId)
+                .orElseThrow(() -> new CustomException(GlobalStatus.ENTITY_NOT_FOUND));
     }
 
 }

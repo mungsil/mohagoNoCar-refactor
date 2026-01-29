@@ -1,6 +1,6 @@
 package com.example.mohago_nocar.global.notification.infrastructure;
 
-import com.example.mohago_nocar.global.common.domain.OutboxStatus;
+import com.example.mohago_nocar.global.common.domain.EventProcessStatus;
 import com.example.mohago_nocar.global.notification.domain.UserNotificationMessageOutbox;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +14,7 @@ public interface UserNotificationMessageOutboxJpaRepository extends JpaRepositor
             "ORDER BY o.createdAt ASC " +
             "LIMIT :size ")
     List<UserNotificationMessageOutbox> findByStatusInOrderByCreatedDateAsc(
-            List<OutboxStatus> statuses, int size
+            List<EventProcessStatus> statuses, int size
     );
 
 }

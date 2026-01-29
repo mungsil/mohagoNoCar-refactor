@@ -1,12 +1,12 @@
-package com.example.mohago_nocar.course.infrastructure.course.repository;
+package com.example.mohago_nocar.course.infrastructure.course;
 
+import com.example.mohago_nocar.course.domain.model.course.CourseOptimizedEvent;
 import com.example.mohago_nocar.course.domain.model.course.TravelCourse;
 import com.example.mohago_nocar.course.domain.repository.TravelCourseRepository;
+import com.example.mohago_nocar.user.domain.AnonymousUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,6 +23,16 @@ public class TravelCourseRepositoryImpl implements TravelCourseRepository {
     @Override
     public Optional<TravelCourse> findById(Long travelCourseId) {
         return travelCourseJpaRepository.findById(travelCourseId);
+    }
+
+    @Override
+    public Optional<AnonymousUser> findUserByCourseId(Long travelCourseId) {
+        return travelCourseJpaRepository.findUserByCourseId(travelCourseId);
+    }
+
+    @Override
+    public Optional<CourseOptimizedEvent> findOptimizedEventByCourseId(Long travelCourseId) {
+        return travelCourseJpaRepository.findOptimizedEventByCourseId(travelCourseId);
     }
 
 }
