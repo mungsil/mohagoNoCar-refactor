@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.course.infrastructure.course.repository;
+package com.example.mohago_nocar.course.infrastructure.course;
 
 import com.example.mohago_nocar.course.domain.model.course.CourseOptimizedEvent;
 import com.example.mohago_nocar.global.common.domain.EventProcessStatus;
@@ -14,6 +14,6 @@ public interface CourseOptimizedEventJpaRepository extends JpaRepository<CourseO
             "where e.status in :eventProcessStatus " +
             "order by e.createdAt asc " +
             "limit :size")
-    List<CourseOptimizedEvent> findTop10ByStatusInOrderByCreatedDateAsc(int size, List<EventProcessStatus> eventProcessStatus);
+    List<CourseOptimizedEvent> findTopNByStatusInOrderByCreatedDateAsc(int size, List<EventProcessStatus> eventProcessStatus);
 
 }

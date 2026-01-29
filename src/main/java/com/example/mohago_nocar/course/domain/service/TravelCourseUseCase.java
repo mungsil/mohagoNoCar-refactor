@@ -7,6 +7,7 @@ import com.example.mohago_nocar.course.domain.model.routeStep.RouteStep;
 import com.example.mohago_nocar.course.presentation.dto.CreateTravelCourseRequestDto;
 import com.example.mohago_nocar.course.presentation.dto.CreateOptimizedTravelCourseAcceptedResponseDto;
 import com.example.mohago_nocar.global.common.domain.EventProcessStatus;
+import com.example.mohago_nocar.user.domain.AnonymousUser;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +31,13 @@ public interface TravelCourseUseCase {
 
     Optional<TravelCourse> findById(Long travelCourseId);
 
-    List<CourseOptimizedEvent> getOptimizedCourseEvents(int i, EventProcessStatus... eventProcessStatus);
+    List<CourseOptimizedEvent> getOldestOptimizedCourseEvents(int num, List<EventProcessStatus> eventProcessStatuses);
 
-    void completeOptimizedEventExecution(CourseOptimizedEvent event, EventProcessStatus eventProcessStatus, String detail);
+    void completeOptimizedEventConsumeWithFailure(CourseOptimizedEvent event, Exception exception);
 
+    void completeOptimizedEventConsumeWithSuccess(CourseOptimizedEvent event);
+
+    AnonymousUser getRequestUserOrThrow(Long travelCourseId);
+
+    CourseOptimizedEvent getOptimizedEventOrThrow(Long travelCourseId);
 }

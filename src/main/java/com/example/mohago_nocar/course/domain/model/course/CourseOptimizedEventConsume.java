@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CourseOptimizedEventConsumeExecution extends BaseEntity {
+public class CourseOptimizedEventConsume extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -25,15 +25,15 @@ public class CourseOptimizedEventConsumeExecution extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
-    public static CourseOptimizedEventConsumeExecution success(CourseOptimizedEvent event) {
-        return CourseOptimizedEventConsumeExecution.builder()
+    public static CourseOptimizedEventConsume success(CourseOptimizedEvent event) {
+        return CourseOptimizedEventConsume.builder()
                 .courseOptimizedEventId(event.getId())
                 .isSuccess(true)
                 .build();
     }
 
-    public static CourseOptimizedEventConsumeExecution failWithDetail(CourseOptimizedEvent event, String detail) {
-        return CourseOptimizedEventConsumeExecution.builder()
+    public static CourseOptimizedEventConsume failWithDetail(CourseOptimizedEvent event, String detail) {
+        return CourseOptimizedEventConsume.builder()
                 .courseOptimizedEventId(event.getId())
                 .isSuccess(false)
                 .description(detail)
@@ -41,7 +41,7 @@ public class CourseOptimizedEventConsumeExecution extends BaseEntity {
     }
 
     @Builder
-    private CourseOptimizedEventConsumeExecution(Long courseOptimizedEventId, Boolean isSuccess, String description) {
+    private CourseOptimizedEventConsume(Long courseOptimizedEventId, Boolean isSuccess, String description) {
         this.courseOptimizedEventId = courseOptimizedEventId;
         this.isSuccess = isSuccess;
         this.description = description;

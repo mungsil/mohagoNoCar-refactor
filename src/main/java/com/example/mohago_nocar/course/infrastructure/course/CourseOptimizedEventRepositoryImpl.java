@@ -1,4 +1,4 @@
-package com.example.mohago_nocar.course.infrastructure.course.repository;
+package com.example.mohago_nocar.course.infrastructure.course;
 
 import com.example.mohago_nocar.course.domain.model.course.CourseOptimizedEvent;
 import com.example.mohago_nocar.course.domain.repository.CourseOptimizedEventRepository;
@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,8 +21,13 @@ public class CourseOptimizedEventRepositoryImpl implements CourseOptimizedEventR
     }
 
     @Override
-    public List<CourseOptimizedEvent> findTop10ByStatusInOrderByCreatedDateAsc(int size, List<EventProcessStatus> eventProcessStatus) {
-        return jpaRepository.findTop10ByStatusInOrderByCreatedDateAsc(size, eventProcessStatus);
+    public List<CourseOptimizedEvent> findTopNByStatusInOrderByCreatedDateAsc(int size, List<EventProcessStatus> eventProcessStatus) {
+        return jpaRepository.findTopNByStatusInOrderByCreatedDateAsc(size, eventProcessStatus);
+    }
+
+    @Override
+    public Optional<CourseOptimizedEvent> findByCourseId(Long travelCourseId) {
+        return jpaRepository.findById(travelCourseId);
     }
 
 }
